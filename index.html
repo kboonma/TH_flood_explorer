@@ -1179,6 +1179,18 @@ b,strong,h1,h2,.big,.t{font-weight:500}
 .bstip .bsbar i{font-size:0}
 .bstip div{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:11.5px}
 .bstip .bsbar i{border-radius:0;width:auto;height:auto;margin:0}
+
+/* ---------- basin donuts ---------- */
+.leaflet-donuts-pane.far{display:none}
+.bdn{position:absolute;left:-20px;top:-20px;width:40px;display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 2px 4px rgba(0,0,0,.55))}
+.bdn svg text{font-size:11px;font-weight:600;fill:#fff}
+.bdn span{margin-top:-1px;font-size:10.5px;font-weight:500;color:#e8eef0;white-space:nowrap;text-shadow:0 0 3px #000,0 0 3px #000}
+.bdn.pilot span{color:var(--tapi)}
+.bdn .hi{position:absolute;right:-6px;top:-4px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--s4);color:#fff;font-size:10px;line-height:16px;text-align:center;font-weight:600;box-shadow:0 0 0 2px rgba(14,19,23,.9)}
+.bdn:hover svg{transform:scale(1.12)}
+.bdn svg{transition:transform .15s}
+.bdntip{min-width:230px}
+.bdn .hi.s5{background:var(--s5)}
 </style>
 
 </head>
@@ -1233,7 +1245,7 @@ const basinLayers={};
 const basinsLayer=L.geoJSON(D.basins,{
   style:f=>({className:'basin'+(f.properties.pilot?' tapi':'')+(f.properties.fc?' fc':'')}),
   onEachFeature:(f,l)=>{basinLayers[f.properties.id]=l;const t=f.properties.pilot;
-    l.bindTooltip(()=>window.__bsReady?basinTip(f.properties):f.properties.name,{sticky:true});
+    
     l.on('click',()=>{if(state.view!=='country')return; if(t)openTapi();});}
 }).addTo(map);
 const pilotLayer=L.geoJSON(D.tapiStudy,{style:{className:'pilot'},interactive:false}).addTo(map);
@@ -1301,6 +1313,7 @@ function showFlood(){
 /* ---------- country view ---------- */
 const panel=document.getElementById('panel'), crumb=document.getElementById('crumb');
 function clearPilotLayers(){
+  window.__donutReady&&map.removeLayer(donutLayer);
   if(window.__demoReady&&state.view==='demo')endDemo();
   if(current){map.removeLayer(current);current=null;}
   map.removeLayer(stLayer); map.removeLayer(frame); map.removeLayer(amphLayer); tambonLayer&&map.removeLayer(tambonLayer);
@@ -1326,7 +1339,7 @@ function openCountry(){
     ${basinSitSection()}
     <p class="note">ขอบเขตประเทศและจังหวัดจากกรมแผนที่ทหาร (OCHA COD-AB) · 22 ลุ่มน้ำหลัก: สำนักงานทรัพยากรน้ำแห่งชาติ (สทนช.)</p>`;
   panel.querySelectorAll('.basin-row').forEach(b=>b.onclick=()=>{const p=basinLayers[b.dataset.id].feature.properties; p.pilot?openTapi(): map.flyToBounds(basinLayers[b.dataset.id].getBounds(),{duration:.6,maxZoom:8});});
-  fillLive(); fillRain(); window.__bsReady&&fillBasinSit();
+  fillLive(); fillRain(); window.__bsReady&&fillBasinSit(); window.__donutReady&&syncDonuts();
   const dc=document.getElementById('dcta'); if(dc)dc.onclick=()=>openDemo(0);
 }
 
@@ -1936,7 +1949,7 @@ const basinSitSection=()=>`<div class="sec" id="basinSit"><h2>สถานกา
     <div class="seg" role="group" aria-label="เรียงลำดับ"><button data-bssort="code" aria-pressed="${BS.sort==='code'}">รหัสลุ่มน้ำ</button><button data-bssort="high" aria-pressed="${BS.sort==='high'}">น้ำมากสุด</button><button data-bssort="low" aria-pressed="${BS.sort==='low'}">น้ำน้อยสุด</button></div>
   </div>
   <div class="bsbody"><p class="lede">กำลังโหลดข้อมูลจาก ThaiWater…</p></div>
-  <p class="note bsnote">เกณฑ์ตามร้อยละความจุลำน้ำ (ระดับน้ำเทียบตลิ่ง): <span><i style="background:var(--s1)"></i>≤10 น้ำน้อยวิกฤต</span> <span><i style="background:var(--s2)"></i>10–30 น้ำน้อย</span> <span><i style="background:var(--s3)"></i>30–70 ปกติ</span> <span><i style="background:var(--s4)"></i>70–100 น้ำมาก</span> <span><i style="background:var(--s5)"></i>&gt;100 ล้นตลิ่ง</span></p></div>`;
+  <p class="note bsnote">วงแหวนบนแผนที่: สัดส่วนสถานีแต่ละระดับ · ตัวเลขกลาง = จำนวนสถานี · ป้ายมุม = น้ำมาก + ล้นตลิ่ง</p><p class="note bsnote" style="border:0;padding-top:0">เกณฑ์ตามร้อยละความจุลำน้ำ (ระดับน้ำเทียบตลิ่ง): <span><i style="background:var(--s1)"></i>≤10 น้ำน้อยวิกฤต</span> <span><i style="background:var(--s2)"></i>10–30 น้ำน้อย</span> <span><i style="background:var(--s3)"></i>30–70 ปกติ</span> <span><i style="background:var(--s4)"></i>70–100 น้ำมาก</span> <span><i style="background:var(--s5)"></i>&gt;100 ล้นตลิ่ง</span></p></div>`;
 function fillBasinSit(){
   const el=document.getElementById('basinSit'); if(!el)return;
   el.querySelectorAll('[data-bsag]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.bsag===BS.ag));b.onclick=()=>{BS.ag=b.dataset.bsag;fillBasinSit();};});
@@ -1958,8 +1971,41 @@ function fillBasinSit(){
   body.querySelectorAll('.bsrow').forEach(b=>b.onclick=()=>{const p=basinLayers[b.dataset.id].feature.properties;
     if(!map.hasLayer(liveLayer))liveLayer.addTo(map);
     p.pilot?openTapi():map.flyToBounds(basinLayers[b.dataset.id].getBounds(),{duration:.6,maxZoom:8,paddingTopLeft:[pclosed()?0:400,60]});});
+  window.__donutReady&&syncDonuts();
 }
 window.__bsReady=true;
+
+/* ---------- per-basin donut on the map: station counts by situation (country view) ---------- */
+const BLP={"01":[19.417,98.173],"02":[19.833,99.948],"03":[17.773,103.6],"04":[16.428,102.156],"05":[15.158,103.127],"06":[18.588,98.697],"07":[18.343,99.551],"08":[16.874,99.865],"09":[17.537,100.414],"10":[15.348,100.495],"11":[15.672,99.481],"12":[14.966,101.168],"13":[14.426,99.92],"14":[14.915,98.851],"15":[13.843,101.45],"16":[13.879,102.604],"17":[12.942,101.882],"18":[12.879,99.638],"19":[10.2,99.05],"20":[7.45,100.3],"21":[6.278,101.496],"22":[8.45,98.55]};
+map.createPane('donuts');map.getPane('donuts').style.zIndex=640;
+const donutLayer=L.layerGroup();
+function donutSVG(c){
+  const R=14,SW=7,C=2*Math.PI*R; let off=0,segs='';
+  if(c&&c.n)[5,4,3,2,1].forEach(s=>{if(!c[s])return;const L=C*c[s]/c.n;
+    segs+=`<circle r="${R}" cx="20" cy="20" fill="none" stroke="var(--s${s})" stroke-width="${SW}" stroke-dasharray="${L.toFixed(2)} ${(C-L).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 20 20)"/>`;off+=L;});
+  else segs=`<circle r="${R}" cx="20" cy="20" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="${SW}"/>`;
+  return `<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle r="${R+SW/2+1}" cx="20" cy="20" fill="rgba(14,19,23,.88)"/>${segs}<text x="20" y="24" text-anchor="middle">${c&&c.n?c.n:'–'}</text></svg>`;
+}
+function drawDonuts(){
+  donutLayer.clearLayers(); if(!LIVE)return;
+  const C=basinCounts();
+  D.basins.features.forEach(f=>{const p=f.properties,c=C[+p.code],ll=BLP[p.code];if(!ll)return;
+    const hi=c?c[4]+c[5]:0, lo=c?c[1]+c[2]:0;
+    const m=L.marker(ll,{pane:'donuts',icon:L.divIcon({className:'',html:`<div class="bdn${p.pilot?' pilot':''}">${donutSVG(c)}<span>${p.name.length>14?p.code:p.name}</span>${c&&c.n&&hi?`<b class="hi${c[5]?' s5':''}" title="น้ำมาก + ล้นตลิ่ง">${hi}</b>`:''}</div>`,iconSize:[0,0]}),
+      keyboard:true,title:`ลุ่มน้ำ${p.name}`});
+    m.bindTooltip(`<b>${p.code} · ลุ่มน้ำ${p.name}</b>${c&&c.n?`<div class="bstip">${bsBar(c)}<div>${[5,4,3,2,1].filter(s=>c[s]).map(s=>`<span><i style="background:var(--s${s})"></i>${SIT_TH[s]} <b>${c[s]}</b></span>`).join('')}</div><small>${c.n} สถานี${BS.ag==='rid'?'ของกรมชลประทาน':''} · น้ำมาก/ล้นตลิ่ง ${hi} · น้ำน้อย ${lo}</small></div>`:'<br><small>ไม่มีสถานีรายงานใน 24 ชม.</small>'}`,
+      {direction:'top',offset:[0,-24],className:'bdntip'});
+    m.on('click',()=>{if(p.pilot){openTapi();return;}map.flyToBounds(basinLayers[p.id].getBounds(),{duration:.6,maxZoom:8,paddingTopLeft:[pclosed()?0:400,60]});});
+    donutLayer.addLayer(m);});
+}
+function syncDonuts(){
+  const on=state.view==='country'&&map.hasLayer(liveLayer)&&!!LIVE;
+  if(on){drawDonuts();if(!map.hasLayer(donutLayer))donutLayer.addTo(map);}else if(map.hasLayer(donutLayer))map.removeLayer(donutLayer);
+  map.getPane('donuts').classList.toggle('far',map.getZoom()>=8);
+}
+map.on('layeradd layerremove',e=>{if(e.layer===liveLayer)syncDonuts();});
+map.on('zoomend',()=>map.getPane('donuts').classList.toggle('far',map.getZoom()>=8));
+window.__donutReady=true;
 
 document.addEventListener('keydown',ev=>{
   if(/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
