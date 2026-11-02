@@ -741,6 +741,15 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 .blabel:before{display:none}
 .leaflet-bar a{background:var(--panel);color:var(--ink);border-color:var(--line)}
 .leaflet-control-attribution{background:var(--panel)!important;color:var(--ink-3)}
+.leaflet-control-layers{background:var(--panel);color:var(--ink);border:1px solid var(--line)!important;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.15)!important;font-family:var(--f-body);font-size:12.5px}
+.leaflet-control-layers-expanded{padding:6px 10px 6px 6px}
+.leaflet-control-layers label{display:flex;align-items:center;gap:4px;margin:2px 0;cursor:pointer}
+.basin{fill-opacity:.35}
+#map.sat .basin{fill-opacity:.12;stroke:#fff;stroke-opacity:.7}
+#map.sat .basin.tapi{fill-opacity:.25;stroke:#ffb347}
+#map.sat .prov,#map.sat .amph{stroke:#fff;stroke-opacity:.6}
+#map.sat .tb{stroke:#fff;stroke-opacity:.8}
+#map.sat .stlab{color:#fff;text-shadow:0 0 3px #000,0 0 3px #000}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel);color:var(--ink)}
 .stq{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid var(--st-q)}
 .str{width:11px;height:11px;border-radius:50%;background:var(--st-r);border:2px solid var(--panel)}
@@ -839,9 +848,24 @@ const fmt=(n,d=1)=>Number(n).toLocaleString('en-US',{minimumFractionDigits:d,max
 const map=L.map('map',{minZoom:5,maxZoom:15,zoomSnap:.25});
 map.fitBounds(L.geoJSON({type:'Feature',geometry:D.thailand}).getBounds(),{padding:[20,20],animate:false});
 map.attributionControl.setPrefix('Leaflet · RTSD/OCHA COD-AB · Natural Earth · ADPC Final Report');
+/* basemaps: keyless tile services (Esri + OpenStreetMap) */
 const dark=matchMedia('(prefers-color-scheme: dark)').matches;
-L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark?'dark_all':'light_all'}/{z}/{x}/{y}{r}.png`,{subdomains:'abcd',maxZoom:19,
-  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
+const ESRI='https://server.arcgisonline.com/ArcGIS/rest/services/';
+const esri=(svc,attr)=>L.tileLayer(`${ESRI}${svc}/MapServer/tile/{z}/{y}/{x}`,{maxZoom:19,maxNativeZoom:16,attribution:attr});
+const ESRI_ATTR='Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors';
+const baseLayers={
+  'แผนที่พื้นฐาน (เทา)': L.layerGroup([
+     esri(dark?'Canvas/World_Dark_Gray_Base':'Canvas/World_Light_Gray_Base',ESRI_ATTR),
+     esri(dark?'Canvas/World_Dark_Gray_Reference':'Canvas/World_Light_Gray_Reference','')]),
+  'OpenStreetMap': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,
+     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
+  'ภาพถ่ายดาวเทียม': L.layerGroup([
+     esri('World_Imagery','Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'),
+     esri('Reference/World_Boundaries_and_Places','')])
+};
+baseLayers['แผนที่พื้นฐาน (เทา)'].addTo(map);
+L.control.layers(baseLayers,null,{position:'topright',collapsed:false}).addTo(map);
+map.on('baselayerchange',e=>document.getElementById('map').classList.toggle('sat',e.name==='ภาพถ่ายดาวเทียม'));
 L.geoJSON(D.neighbors,{style:{className:'nb'},interactive:false}).addTo(map);
 L.geoJSON({type:'Feature',geometry:D.thailand},{style:{className:'th'},interactive:false}).addTo(map);
 
