@@ -16,6 +16,7 @@ Options for convert
   --step  N                                       render every Nth time step (default 1)
   --start YYYY-MM-DD --end YYYY-MM-DD             time window
   --upsample N                                    pixel size multiplier for the PNG frames (default: auto)
+  --min FLOAT                                     values below this are transparent (default 0.1)
 
 Outputs (in out_dir)
   index.json        bounds (Leaflet [[S,W],[N,E]]), colour scale, units, list of frames with time + basin mean
@@ -244,7 +245,7 @@ def convert(a):
         idx = np.clip(np.nan_to_num(g, nan=0) / vmax * 255, 0, 255).astype(int)
         rgba = np.zeros(g.shape + (4,), np.uint8)
         rgba[..., :3] = lut[idx]
-        alpha = np.where(np.isnan(g) | (g < 0.1), 0, np.clip(120 + 135 * np.sqrt(np.clip(g / vmax, 0, 1)), 0, 235))
+        alpha = np.where(np.isnan(g) | (g < a.min), 0, np.clip(120 + 135 * np.sqrt(np.clip(g / vmax, 0, 1)), 0, 235))
         rgba[..., 3] = alpha.astype(np.uint8)
         fn = f"frames/rain_{t.strftime(fmt_t)}.png"
         Image.fromarray(rgba).save(f'{a.out}/{fn}', optimize=True)
@@ -272,5 +273,6 @@ if __name__ == '__main__':
     p.add_argument('--vmax', type=float); p.add_argument('--scale', type=float, default=1.0)
     p.add_argument('--step', type=int, default=1); p.add_argument('--start'); p.add_argument('--end')
     p.add_argument('--upsample', type=int)
+    p.add_argument('--min', type=float, default=0.1, help='values below this are transparent (default 0.1)')
     a = p.parse_args()
     inspect(a.mat) if a.cmd == 'inspect' else convert(a)
