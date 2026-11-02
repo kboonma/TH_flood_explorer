@@ -1,6 +1,6 @@
-# Tapi Flood Explorer
+# Thailand Flood Explorer
 
-Interactive demo map of projected flood hazard in the Tapi River Basin (Surat Thani, Thailand), prepared for a research proposal.
+Interactive map of flood hazard, rainfall and climate scenarios across Thailand's river basins. The first pilot basin is the Tapi (Surat Thani); prepared for a research proposal.
 
 **Live site:** https://kboonma.github.io/TH_flood_explorer/
 
