@@ -1149,6 +1149,36 @@ aside::-webkit-scrollbar{width:8px} aside::-webkit-scrollbar-thumb{background:rg
 body,button,input,select,textarea,.leaflet-container,.leaflet-container *,.leaflet-popup-content,.leaflet-tooltip,svg text{font-family:"Kanit",system-ui,sans-serif!important}
 body{font-weight:300}
 b,strong,h1,h2,.big,.t{font-weight:500}
+
+/* ---------- situation per basin ---------- */
+.bsctl{display:flex;flex-direction:column;gap:6px;margin:0 0 8px}
+.bsctl .seg button{font-size:12px;padding:5px 4px}
+.bslist{display:flex;flex-direction:column;gap:2px}
+.bsrow{display:flex;flex-direction:column;gap:5px;width:100%;padding:7px 8px;border:0;border-radius:8px;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.bsrow:hover{background:rgba(255,255,255,.06)}
+.bsrow:focus-visible{outline:2px solid var(--sel);outline-offset:-2px}
+.bsrow.pilot{background:var(--tapi-fill)}
+.bsrow .h{display:flex;align-items:baseline;gap:8px;min-width:0}
+.bsrow .n{font-size:11px;color:var(--ink-3);width:18px;flex:none}
+.bsrow .nm{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bsrow .nm em{font-style:normal;font-size:10.5px;color:var(--tapi);font-weight:500;margin-left:2px}
+.bsrow .ct{flex:none;display:flex;gap:7px;font-size:11.5px;white-space:nowrap}
+.bsrow .hi{color:#8cc4ff}
+.bsrow .lo{color:#f2c94c}
+.bsrow .tt{color:var(--ink-3)}
+.bsbar{display:flex;height:12px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,.05)}
+.bsbar.empty{height:4px}
+.bsbar i{display:flex;align-items:center;justify-content:center;font-style:normal;font-size:9px;line-height:1;color:#0b1014;font-weight:600;min-width:2px}
+.bsbar .s1{background:var(--s1)} .bsbar .s2{background:var(--s2)} .bsbar .s3{background:var(--s3)} .bsbar .s4{background:var(--s4)} .bsbar .s5{background:var(--s5)}
+.bsbar .s4,.bsbar .s5,.bsbar .s1{color:#fff}
+.bsnote{display:flex;flex-wrap:wrap;gap:3px 10px;align-items:center}
+.bsnote span{white-space:nowrap}
+.bsnote i,.bstip div i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.bstip{margin-top:6px;min-width:220px}
+.bstip .bsbar{height:10px;margin-bottom:4px}
+.bstip .bsbar i{font-size:0}
+.bstip div{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:11.5px}
+.bstip .bsbar i{border-radius:0;width:auto;height:auto;margin:0}
 </style>
 
 </head>
@@ -1203,7 +1233,7 @@ const basinLayers={};
 const basinsLayer=L.geoJSON(D.basins,{
   style:f=>({className:'basin'+(f.properties.pilot?' tapi':'')+(f.properties.fc?' fc':'')}),
   onEachFeature:(f,l)=>{basinLayers[f.properties.id]=l;const t=f.properties.pilot;
-    l.bindTooltip(`<b>${f.properties.code} · ลุ่มน้ำ${f.properties.name}</b><br><small>${f.properties.name_en} · ${Math.round(f.properties.area_km2).toLocaleString('en-US')} ตร.กม.</small><br>${t?'พื้นที่นำร่อง: ลุ่มน้ำตาปี · คลิกเพื่อเปิด':'ขยายผลในอนาคต'}`,{sticky:true});
+    l.bindTooltip(()=>window.__bsReady?basinTip(f.properties):f.properties.name,{sticky:true});
     l.on('click',()=>{if(state.view!=='country')return; if(t)openTapi();});}
 }).addTo(map);
 const pilotLayer=L.geoJSON(D.tapiStudy,{style:{className:'pilot'},interactive:false}).addTo(map);
@@ -1293,12 +1323,10 @@ function openCountry(){
     </div>
     ${rainSection()}
     ${liveSection('liveNation','สถานการณ์น้ำปัจจุบัน · ทั่วประเทศ')}
-    <div class="sec"><h2>22 ลุ่มน้ำหลัก</h2><div class="basin-list">${rows.map((r,n)=>`
-      <button class="basin-row" data-id="${r.id}"><span class="n">${r.code}</span><span>${r.name}</span>
-      <span class="tag">${r.pilot?'นำร่อง: ตาปี':Math.round(r.area_km2/1000)+'k ตร.กม.'}</span></button>`).join('')}</div></div>
+    ${basinSitSection()}
     <p class="note">ขอบเขตประเทศและจังหวัดจากกรมแผนที่ทหาร (OCHA COD-AB) · 22 ลุ่มน้ำหลัก: สำนักงานทรัพยากรน้ำแห่งชาติ (สทนช.)</p>`;
   panel.querySelectorAll('.basin-row').forEach(b=>b.onclick=()=>{const p=basinLayers[b.dataset.id].feature.properties; p.pilot?openTapi(): map.flyToBounds(basinLayers[b.dataset.id].getBounds(),{duration:.6,maxZoom:8});});
-  fillLive(); fillRain();
+  fillLive(); fillRain(); window.__bsReady&&fillBasinSit();
   const dc=document.getElementById('dcta'); if(dc)dc.onclick=()=>openDemo(0);
 }
 
@@ -1405,8 +1433,8 @@ function loadLive(){
   if(liveLoading)return liveLoading;
   liveLoading=getJSON(TW+'waterlevel_load').then(j=>{
     const rows=(j.waterlevel_data&&j.waterlevel_data.data||[]).filter(r=>r.station&&nnum(r.station.tele_station_lat)&&nnum(r.station.tele_station_long));
-    LIVE={t:Date.now(),rows};liveErr=false;drawLive();fillLive();window.__rivReady&&fillRiver();return LIVE;
-  }).catch(e=>{liveErr=true;fillLive();throw e;}).finally(()=>{liveLoading=null;});
+    LIVE={t:Date.now(),rows};liveErr=false;drawLive();fillLive();window.__rivReady&&fillRiver();window.__bsReady&&fillBasinSit();return LIVE;
+  }).catch(e=>{liveErr=true;fillLive();window.__bsReady&&fillBasinSit();throw e;}).finally(()=>{liveLoading=null;});
   return liveLoading;
 }
 function drawLive(){
@@ -1879,6 +1907,59 @@ document.addEventListener('keydown',ev=>{
 });
 
 window.__demoReady=true;
+
+/* ---------- situation summary per basin (live ThaiWater, % of channel capacity) ---------- */
+const BS={sort:'code',ag:'all'};
+const isRID=r=>r.agency&&r.agency.agency_shortname&&r.agency.agency_shortname.th==='ชป.';
+function basinCounts(ag){
+  const C={}; if(!LIVE)return C;
+  LIVE.rows.forEach(r=>{
+    const b=r.basin&&+r.basin.basin_code; if(!b||b>22)return;
+    if((ag||BS.ag)==='rid'&&!isRID(r))return;
+    const c=C[b]=C[b]||{n:0,old:0,0:0,1:0,2:0,3:0,4:0,5:0};
+    if(isOld(r)){c.old++;return;}
+    c.n++; c[sitOf(r)]++;
+  });
+  return C;
+}
+const bsBar=c=>c&&c.n?`<span class="bsbar">${[5,4,3,2,1].map(s=>c[s]?`<i class="s${s}" style="flex:${c[s]}" title="${SIT_TH[s]} ${c[s]} สถานี">${c[s]/c.n>=.09?c[s]:''}</i>`:'').join('')}</span>`:'<span class="bsbar empty"></span>';
+function basinTip(p){
+  let h=`<b>${p.code} · ลุ่มน้ำ${p.name}</b><br><small>${p.name_en} · ${Math.round(p.area_km2).toLocaleString('en-US')} ตร.กม.</small>`;
+  if(LIVE){const c=basinCounts('all')[+p.code];
+    if(c&&c.n)h+=`<div class="bstip">${bsBar(c)}<div>${[5,4,3,2,1].filter(s=>c[s]).map(s=>`<span><i style="background:var(--s${s})"></i>${SIT_TH[s]} <b>${c[s]}</b></span>`).join('')}</div><small>${c.n} สถานีที่รายงานใน 24 ชม.</small></div>`;
+    else h+='<br><small>ไม่มีสถานีรายงานใน 24 ชม.</small>';}
+  return h+(p.pilot?'<br><small>พื้นที่นำร่อง: ลุ่มน้ำตาปี · คลิกเพื่อเปิด</small>':'');
+}
+const basinSitSection=()=>`<div class="sec" id="basinSit"><h2>สถานการณ์น้ำรายลุ่มน้ำ <span class="realtag">ข้อมูลจริง</span></h2>
+  <div class="bsctl">
+    <div class="seg" role="group" aria-label="หน่วยงาน"><button data-bsag="all" aria-pressed="${BS.ag==='all'}">ทุกหน่วยงาน</button><button data-bsag="rid" aria-pressed="${BS.ag==='rid'}">เฉพาะกรมชลประทาน</button></div>
+    <div class="seg" role="group" aria-label="เรียงลำดับ"><button data-bssort="code" aria-pressed="${BS.sort==='code'}">รหัสลุ่มน้ำ</button><button data-bssort="high" aria-pressed="${BS.sort==='high'}">น้ำมากสุด</button><button data-bssort="low" aria-pressed="${BS.sort==='low'}">น้ำน้อยสุด</button></div>
+  </div>
+  <div class="bsbody"><p class="lede">กำลังโหลดข้อมูลจาก ThaiWater…</p></div>
+  <p class="note bsnote">เกณฑ์ตามร้อยละความจุลำน้ำ (ระดับน้ำเทียบตลิ่ง): <span><i style="background:var(--s1)"></i>≤10 น้ำน้อยวิกฤต</span> <span><i style="background:var(--s2)"></i>10–30 น้ำน้อย</span> <span><i style="background:var(--s3)"></i>30–70 ปกติ</span> <span><i style="background:var(--s4)"></i>70–100 น้ำมาก</span> <span><i style="background:var(--s5)"></i>&gt;100 ล้นตลิ่ง</span></p></div>`;
+function fillBasinSit(){
+  const el=document.getElementById('basinSit'); if(!el)return;
+  el.querySelectorAll('[data-bsag]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.bsag===BS.ag));b.onclick=()=>{BS.ag=b.dataset.bsag;fillBasinSit();};});
+  el.querySelectorAll('[data-bssort]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.bssort===BS.sort));b.onclick=()=>{BS.sort=b.dataset.bssort;fillBasinSit();};});
+  const body=el.querySelector('.bsbody');
+  if(!LIVE){body.innerHTML=`<p class="lede">${liveErr?'โหลดข้อมูลจาก ThaiWater ไม่สำเร็จ ลองรีเฟรชหน้าเว็บ':'กำลังโหลดข้อมูลจาก ThaiWater…'}</p>`;return;}
+  const C=basinCounts(), rows=D.basins.features.map(f=>f.properties);
+  const hi=p=>{const c=C[+p.code];return c&&c.n?(c[4]+c[5])/c.n:-1;}, lo=p=>{const c=C[+p.code];return c&&c.n?(c[1]+c[2])/c.n:-1;};
+  if(BS.sort==='high')rows.sort((a,b)=>hi(b)-hi(a)||a.code.localeCompare(b.code));
+  else if(BS.sort==='low')rows.sort((a,b)=>lo(b)-lo(a)||a.code.localeCompare(b.code));
+  else rows.sort((a,b)=>a.code.localeCompare(b.code));
+  const tot={n:0,old:0,1:0,2:0,3:0,4:0,5:0};Object.values(C).forEach(c=>{['n','old',1,2,3,4,5].forEach(k=>tot[k]+=c[k]);});
+  body.innerHTML=`<p class="lede" style="font-size:12.5px">${tot.n} สถานี${BS.ag==='rid'?'ของกรมชลประทาน':''}ใน 22 ลุ่มน้ำ · อัปเดต ${fmtTime(LIVE.t)}${tot.old?` · ไม่นับ ${tot.old} สถานีที่ข้อมูลเก่ากว่า 24 ชม.`:''}</p>
+    <div class="bslist">${rows.map(p=>{const c=C[+p.code];const n=c?c.n:0;
+      return `<button class="bsrow${p.pilot?' pilot':''}" data-id="${p.id}">
+        <span class="h"><span class="n">${p.code}</span><span class="nm">${p.name}${p.pilot?' <em>นำร่อง</em>':''}</span>
+          <span class="ct">${n?`<span class="hi" title="น้ำมาก + ล้นตลิ่ง">มาก ${c[4]+c[5]}</span><span class="lo" title="น้ำน้อย + น้ำน้อยวิกฤต">น้อย ${c[1]+c[2]}</span><span class="tt">/ ${n}</span>`:'<span class="tt">ไม่มีข้อมูล</span>'}</span></span>
+        ${bsBar(c)}</button>`;}).join('')}</div>`;
+  body.querySelectorAll('.bsrow').forEach(b=>b.onclick=()=>{const p=basinLayers[b.dataset.id].feature.properties;
+    if(!map.hasLayer(liveLayer))liveLayer.addTo(map);
+    p.pilot?openTapi():map.flyToBounds(basinLayers[b.dataset.id].getBounds(),{duration:.6,maxZoom:8,paddingTopLeft:[pclosed()?0:400,60]});});
+}
+window.__bsReady=true;
 
 document.addEventListener('keydown',ev=>{
   if(/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
