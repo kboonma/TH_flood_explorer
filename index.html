@@ -681,6 +681,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
   --d1:#deebf7; --d2:#c6dbef; --d3:#9ecae1; --d4:#6baed6; --d5:#3182bd; --d6:#08519c; --d7:#08306b;
   --st-q:#16313a; --st-r:#c2412d;
   --c1:#fde6c8; --c2:#fbc48a; --c3:#f39a52; --c4:#dd6b2c; --c5:#b0421b;
+  --s1:#9a5b22; --s2:#e2b33b; --s3:#3f9b5a; --s4:#2f78c4; --s5:#d03a2f;
   --fc:#0f7c8c; --fc-fill:#d3ecef; --a0:#2f7d4f; --a0-fill:#e2f1e7; --a1:#d9a400; --a1-fill:#fbf1cc; --a1-ink:#8a6400; --a2:#e0711d; --a2-fill:#fbe3cf; --a2-ink:#a8500f; --a3:#c8312a;
   --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
   --f-body:"IBM Plex Sans Thai",system-ui,sans-serif;
@@ -694,6 +695,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
   --tapi:#e8a24a; --tapi-fill:#4a3a22; --sel:#e8a24a;
   --st-q:#e4ecea; --st-r:#f06a52;
   --c1:#5a3a1e; --c2:#8a5221; --c3:#c06b25; --c4:#e58a3a; --c5:#f6b26b;
+  --s1:#c98a4b; --s2:#f0c95a; --s3:#6cc28c; --s4:#5aa2ea; --s5:#f0625a;
   --fc:#3fb8c9; --fc-fill:#173a40; --a0:#6cc28c; --a0-fill:#1c3326; --a1:#f0c419; --a1-fill:#3a3214; --a1-ink:#f3d35c; --a2:#f08a3c; --a2-fill:#3d2715; --a2-ink:#f6a565; --a3:#ef4f45;
   color-scheme:dark}}
 :root[data-theme="dark"]{
@@ -704,6 +706,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
   --tapi:#e8a24a; --tapi-fill:#4a3a22; --sel:#e8a24a;
   --st-q:#e4ecea; --st-r:#f06a52;
   --c1:#5a3a1e; --c2:#8a5221; --c3:#c06b25; --c4:#e58a3a; --c5:#f6b26b;
+  --s1:#c98a4b; --s2:#f0c95a; --s3:#6cc28c; --s4:#5aa2ea; --s5:#f0625a;
   --fc:#3fb8c9; --fc-fill:#173a40; --a0:#6cc28c; --a0-fill:#1c3326; --a1:#f0c419; --a1-fill:#3a3214; --a1-ink:#f3d35c; --a2:#f08a3c; --a2-fill:#3d2715; --a2-ink:#f6a565; --a3:#ef4f45;
   color-scheme:dark}
 html,body{height:100%;margin:0}
@@ -892,6 +895,65 @@ b.c.a0{color:var(--a0)} b.c.a1{color:var(--a1-ink)} b.c.a2{color:var(--a2-ink)} 
 .tb-play:focus-visible,.tb-days button:focus-visible,.strow:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
 header .sub{font-size:12.5px;color:var(--ink-3);font-weight:400;margin-left:6px}
 @media (max-width:820px){.tb-days button{min-width:38px;padding:2px 4px}.timebar{bottom:calc(20px + env(safe-area-inset-bottom,0px))}}
+
+/* ---------- live ThaiWater layer ---------- */
+.spill{display:inline-block;font-size:11px;font-weight:600;padding:0 7px;border-radius:999px;white-space:nowrap;line-height:1.6;color:#fff;background:var(--ink-3)}
+.spill.s1{background:var(--s1)} .spill.s2{background:var(--s2);color:#3a2c00} .spill.s3{background:var(--s3)} .spill.s4{background:var(--s4)} .spill.s5{background:var(--s5)}
+.spill.old{background:var(--chip);color:var(--ink-3);border:1px solid var(--line)}
+.realtag{font-family:var(--f-body);font-size:10.5px;letter-spacing:0;text-transform:none;background:var(--s3);color:#fff;border-radius:3px;padding:1px 6px;margin-left:4px;vertical-align:1px}
+.sitbar{display:flex;height:10px;border-radius:3px;overflow:hidden;margin:6px 0}
+.sitbar i{display:block} .sitbar .s1{background:var(--s1)} .sitbar .s2{background:var(--s2)} .sitbar .s3{background:var(--s3)} .sitbar .s4{background:var(--s4)} .sitbar .s5{background:var(--s5)}
+.sitcnt{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--ink-2)}
+.sitcnt i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.lvlist{display:flex;flex-direction:column;margin-top:6px;max-height:420px;overflow-y:auto}
+.lvrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 4px;border:0;border-bottom:1px solid var(--line);background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.lvrow:hover{background:var(--chip)}
+.lvrow:focus-visible{outline:2px solid var(--sel);outline-offset:-2px}
+.lvrow .nm{overflow:hidden;text-overflow:ellipsis}
+.lvrow .nm i{font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--ink-3)}
+.lvrow .nm small{display:block;color:var(--ink-3);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvrow .num{font-family:var(--f-mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lvrow .num small{display:block;color:var(--ink-3);font-size:10.5px}
+.livelegend{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:11.5px;box-shadow:0 1px 4px rgba(0,0,0,.15);min-width:140px}
+.livelegend b{display:block;font-family:var(--f-display);font-size:12px;margin-bottom:3px}
+.livelegend div{display:flex;align-items:center;gap:6px;line-height:1.55}
+.livelegend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.livelegend span{margin-left:auto;font-family:var(--f-mono);color:var(--ink-3)}
+.livelegend small{display:block;color:var(--ink-3);font-size:10px;margin-top:3px}
+.livepop .leaflet-popup-content{margin:12px 12px 10px;width:auto!important;min-width:300px}
+.lcard{font-family:var(--f-body);font-size:12.5px;color:var(--ink)}
+.lc-top b{font-family:var(--f-display);font-size:15px}
+.lc-top .code{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-2);margin-left:6px;border:1px solid var(--line);border-radius:3px;padding:0 4px}
+.lc-top small{display:block;color:var(--ink-3);font-size:11.5px;margin-top:1px}
+.lc-sit{display:flex;gap:6px;align-items:center;margin:7px 0}
+.lc-time{margin-left:auto;font-size:11px;color:var(--ink-3);font-family:var(--f-mono)}
+.lc-kv{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin-bottom:6px}
+.lc-kv div{display:flex;flex-direction:column}
+.lc-kv b{font-family:var(--f-mono);font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums}
+.lc-kv span{font-size:10.5px;color:var(--ink-3);line-height:1.3}
+.lc-h{font-family:var(--f-display);font-weight:600;font-size:11.5px;color:var(--ink-2);margin:6px 0 0}
+.lc-note,.lc-empty{font-size:11px;color:var(--ink-3);margin:2px 0}
+.chart.lc .ln{fill:none;stroke:var(--s4);stroke-width:1.8}
+.chart.lc .lp{fill:var(--s4)}
+.chart.lc .ref{stroke-width:1.1;stroke-dasharray:4 3}
+.chart.lc .ref.bank{stroke:var(--s5)} .chart.lc .refl.bank{fill:var(--s5)}
+.chart.lc .ref.ground{stroke:var(--ink-3)} .chart.lc .refl.ground{fill:var(--ink-3)}
+.chart.lc .refl{font-family:var(--f-body);font-size:9.5px}
+.lc-src{font-size:10.5px;color:var(--ink-3);margin-top:6px}
+.lc-src a{color:var(--s4)}
+@media (max-width:820px){.livelegend{display:none}}
+
+/* ---------- modelled flow (ADPC) ---------- */
+.chart.mf .mfb.p0{fill:var(--c2)} .chart.mf .mfb.p1{fill:var(--c3)} .chart.mf .mfb.p2{fill:var(--c5)}
+.chart.mf .mfb.on{stroke:var(--ink);stroke-width:1.5}
+.chart.mf .ref{stroke-width:1.1;stroke-dasharray:4 3}
+.chart.mf .ref.bank{stroke:var(--s5)} .chart.mf .refl.bank{fill:var(--s5);font-family:var(--f-body);font-size:9.5px}
+.mflive{margin-top:6px}
+.figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:6px}
+.figs a{display:flex;flex-direction:column;gap:3px;text-decoration:none;color:var(--ink-2);font-size:11px;line-height:1.35}
+.figs img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:left top;border:1px solid var(--line);border-radius:4px;background:#fff}
+.figs a:hover img{border-color:var(--tapi)}
+.figs a:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
 </style>
 
 </head>
@@ -938,7 +1000,7 @@ const baseLayers={
      esri('Reference/World_Boundaries_and_Places','')])
 };
 baseLayers['แผนที่พื้นฐาน (เทา)'].addTo(map);
-L.control.layers(baseLayers,null,{position:'topright',collapsed:false}).addTo(map);
+const layersCtl=L.control.layers(baseLayers,null,{position:'topright',collapsed:false}).addTo(map);
 map.on('baselayerchange',e=>document.getElementById('map').classList.toggle('sat',e.name==='ภาพถ่ายดาวเทียม'));
 L.geoJSON(D.neighbors,{style:{className:'nb'},interactive:false}).addTo(map);
 L.geoJSON({type:'Feature',geometry:D.thailand},{style:{className:'th'},interactive:false}).addTo(map);
@@ -998,6 +1060,7 @@ D.stations.filter(s=>!/map only/.test(s.type)).forEach(s=>{
   const m=L.marker([s.lat,s.lon],{icon:L.divIcon({className:'',html:`<div class="${q?'stq':'str'}"></div>`,iconSize:q?[14,12]:[11,11],iconAnchor:q?[7,10]:[6,6]}),title:s.station_id});
   m.bindPopup(`<b>${s.station_id}</b> · ${s.type}<br>${s.river?s.river+'<br>':''}${s.location?s.location+'<br>':''}${s.agency}${s.record_period?' · '+s.record_period:''}${s.role_note?'<br><small>'+s.role_note+'</small>':''}<br><small>ตำแหน่งจาก Figure 2 (โดยประมาณ)</small>`);
   if(q) m.bindTooltip(s.station_id,{permanent:true,direction:'right',offset:[6,-4],className:'stlab'});
+  if(/^X\.(217|36)$/.test(s.station_id)) m.on('click',()=>{state.mst=s.station_id;renderPanel(true);const e=document.getElementById('mflow');e&&e.scrollIntoView({behavior:'smooth',block:'start'});});
   stLayer.addLayer(m);
 });
 
@@ -1035,11 +1098,13 @@ function openCountry(){
       <button class="basin-row ready fcrow" data-id="${FCB.id}"><span class="n">${FCB.code}</span><span><b>ลุ่มน้ำ${FCB.name}</b><small style="display:block;color:var(--ink-3)">พยากรณ์ 10 วัน · ฝน · อัตราการไหล · ระดับเตือนภัย</small></span><span class="tag">นำร่อง</span></button>
       <button class="basin-row ready" data-id="${PILOT.id}"><span class="n">${PILOT.code}</span><span><b>ตาปี</b> (ลุ่มน้ำ${PILOT.name})<small style="display:block;color:var(--ink-3)">ชุดข้อมูลตัวอย่าง: ฉากทัศน์น้ำท่วมภายใต้ภูมิอากาศอนาคต</small></span><span class="tag">ตัวอย่าง</span></button>
     </div>
+    ${liveSection('liveNation','สถานการณ์น้ำปัจจุบัน · ทั่วประเทศ')}
     <div class="sec"><h2>22 ลุ่มน้ำหลัก</h2><div class="basin-list">${rows.map((r,n)=>`
       <button class="basin-row" data-id="${r.id}"><span class="n">${r.code}</span><span>${r.name}</span>
       <span class="tag">${r.fc?'นำร่อง':r.pilot?'ตัวอย่าง':Math.round(r.area_km2/1000)+'k ตร.กม.'}</span></button>`).join('')}</div></div>
     <p class="note">ขอบเขตประเทศและจังหวัดจากกรมแผนที่ทหาร (OCHA COD-AB) · 22 ลุ่มน้ำหลัก: สำนักงานทรัพยากรน้ำแห่งชาติ (สทนช.) · ขอบเขตลุ่มน้ำตาปี (เส้นประ) ลอกจากรายงาน</p>`;
   panel.querySelectorAll('.basin-row').forEach(b=>b.onclick=()=>{const p=basinLayers[b.dataset.id].feature.properties; p.fc?openNan(): p.pilot?openTapi(): map.flyToBounds(basinLayers[b.dataset.id].getBounds(),{duration:.6,maxZoom:8});});
+  fillLive();
 }
 
 /* ---------- tapi view ---------- */
@@ -1125,6 +1190,7 @@ function renderPanel(keep){
       <p class="note" style="border:0;padding-top:6px"><span class="flag">●</span> ตำบลที่รายงานระบุว่าเสี่ยงน้ำท่วมมากที่สุด · % คือสัดส่วนของพื้นที่ตำบล</p>
     </div>
 
+    ${mflowSection()}
     <details><summary>น้ำท่วมในอดีต (ตารางที่ 2 ในรายงาน)</summary>
       <div class="hist">${D.hist.map(h=>`<div><b>${h.year}</b>${h.trigger}<p>${h.impact}</p></div>`).join('')}</div></details>
 
@@ -1146,6 +1212,8 @@ function renderPanel(keep){
     tr.onclick=go; tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};});
   document.getElementById('op').oninput=ev=>{state.opacity=+ev.target.value; current&&current.setOpacity(state.opacity);};
   document.getElementById('stt').onchange=ev=>{state.stations=ev.target.checked; state.stations?stLayer.addTo(map):map.removeLayer(stLayer);};
+  panel.querySelectorAll('[data-mst]').forEach(b=>b.onclick=()=>{state.mst=b.dataset.mst;renderPanel(true);});
+  fillMflowLive();
 }
 function update(){ showFlood(); renderPanel(true); }
 
@@ -1255,7 +1323,7 @@ function renderNan(keep){
   const aff=NAMPH.features.map(f=>{const sid=NF.amphoe_station[f.properties.pcode],s=sid&&stById(sid);return{f,s,lv:s?level(s,d):0};}).filter(a=>a.lv>0).sort((a,b)=>b.lv-a.lv||a.f.properties.prov_th.localeCompare(b.f.properties.prov_th,'th'));
   const sq=stStats(st,d);
   panel.innerHTML=`
-  <div class="demo">ข้อมูลจำลองเพื่อสาธิตรูปแบบการแสดงผล ยังไม่ใช่ผลพยากรณ์จริง</div>
+  <div class="demo">ผลพยากรณ์ (หัวข้อ 1–4) เป็นข้อมูลจำลองเพื่อสาธิตรูปแบบ · สถานการณ์น้ำปัจจุบันเป็นข้อมูลจริงจาก ThaiWater</div>
   <div class="sec"><p class="big">ลุ่มน้ำน่าน · พยากรณ์ล่วงหน้า 10 วัน</p>
     <p class="lede">ออกพยากรณ์ ${new Date(NF.issued).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})} น. · กำลังดู <b>${thDate(NF.days[d])}</b> (${d===0?'วันนี้':'ล่วงหน้า '+d+' วัน'})</p></div>
 
@@ -1265,6 +1333,7 @@ function renderNan(keep){
     <p class="lede" style="font-size:12px;margin:0">จำนวนสถานีแยกตามระดับ ณ วันที่เลือก · ฝนเฉลี่ยลุ่มน้ำสะสม 10 วัน ${fmt(total10,0)} มม. (${NF.sources[fstate.src]})</p>
   </div>
 
+  ${liveSection('liveBasin','สถานการณ์น้ำปัจจุบัน · ลุ่มน้ำน่าน')}
   <div class="sec"><h2>1 · พยากรณ์ฝน</h2>
     <div class="seg" role="group" aria-label="แหล่งข้อมูลฝน" style="margin-bottom:8px">${Object.entries(NF.sources).map(([k,v])=>`<button data-src="${k}" aria-pressed="${fstate.src===k}">${v}</button>`).join('')}</div>
     <div class="seg" role="group" aria-label="ชนิดแผนที่ฝน" style="margin-bottom:10px">
@@ -1307,8 +1376,9 @@ function renderNan(keep){
   <ul class="note">
     <li>ลำดับการทำงาน: ข้อมูลสถานี TMD/RID/HII + เรดาร์ + IMERG + TMD-WRF/ECMWF/GFS → AI หลอมรวมและปรับแก้ฝน → HEC-HMS → HEC-RAS / แบบจำลองตัวแทน → แดชบอร์ด</li>
     <li>ผู้ใช้หลัก: สำนักงานชลประทานที่ 3 (อุตรดิตถ์ พิษณุโลก พิจิตร) และกรมชลประทานส่วนกลาง</li>
-    <li>ตำแหน่งสถานี เกณฑ์ตลิ่ง ฝน และค่าความแม่นยำในหน้านี้เป็นค่าสมมุติ ใช้แสดงรูปแบบเท่านั้น</li>
+    <li>สถานีพยากรณ์ (สี่เหลี่ยม/วงกลมขอบขาว) เกณฑ์ตลิ่ง ฝน และค่าความแม่นยำในหัวข้อ 1–4 เป็นค่าสมมุติ ส่วนจุดสถานีวัดระดับน้ำ (ThaiWater) เป็นข้อมูลจริง</li>
   </ul>`;
+  fillLive();
   panel.querySelector('.rramp').style.background=`linear-gradient(90deg,${[0,.25,.5,.75,1].map(x=>`rgb(${rampRGB(Math.sqrt(x)).join(',')})`).join(',')})`;
   panel.querySelectorAll('[data-src]').forEach(b=>b.onclick=()=>{fstate.src=b.dataset.src;drawRain();renderNan(true);});
   panel.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{fstate.accum=b.dataset.acc==='1';drawRain();renderNan(true);});
@@ -1330,6 +1400,208 @@ async function openNan(){
   renderNan();
 }
 
+
+
+/* ---------- live water level & discharge (ThaiWater public API, HII) ---------- */
+const TW='https://api-v3.thaiwater.net/api/v1/thaiwater30/public/';
+const SIT_TH={1:'น้ำน้อยวิกฤต',2:'น้ำน้อย',3:'ปกติ',4:'น้ำมาก',5:'ล้นตลิ่ง'};
+const SIT_ORDER=[5,4,1,2,3];
+const liveLayer=L.layerGroup(), liveRenderer=L.canvas({padding:.5});
+let LIVE=null, liveLoading=null, liveErr=false;
+const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const nnum=v=>v===null||v===undefined||v===''||isNaN(+v)?null:+v;
+const twTime=s=>new Date(String(s).replace(' ','T')+':00+07:00').getTime();
+const sitOf=r=>{const s=+r.situation_level;return s>=1&&s<=5?s:0;};
+const isOld=r=>!r.waterlevel_datetime||Date.now()-twTime(r.waterlevel_datetime)>24*3600e3;
+const fmtTime=t=>new Date(t).toLocaleString('th-TH',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Bangkok'});
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function loadLive(){
+  if(LIVE&&Date.now()-LIVE.t<10*60e3)return Promise.resolve(LIVE);
+  if(liveLoading)return liveLoading;
+  liveLoading=getJSON(TW+'waterlevel_load').then(j=>{
+    const rows=(j.waterlevel_data&&j.waterlevel_data.data||[]).filter(r=>r.station&&nnum(r.station.tele_station_lat)&&nnum(r.station.tele_station_long));
+    LIVE={t:Date.now(),rows};liveErr=false;drawLive();fillLive();return LIVE;
+  }).catch(e=>{liveErr=true;fillLive();throw e;}).finally(()=>{liveLoading=null;});
+  return liveLoading;
+}
+function drawLive(){
+  liveLayer.clearLayers();
+  const order=r=>SIT_ORDER.indexOf(sitOf(r));
+  [...LIVE.rows].sort((a,b)=>order(b)-order(a)).forEach(r=>{
+    const s=sitOf(r),st=r.station,old=isOld(r);
+    const m=L.circleMarker([+st.tele_station_lat,+st.tele_station_long],{renderer:liveRenderer,radius:s===5?6.5:s===4?5.5:4.5,weight:1,
+      color:cssv('--panel'),fillColor:s?cssv('--s'+s):cssv('--ink-3'),fillOpacity:old?.3:.95});
+    m.bindTooltip(`${esc(st.tele_station_name&&st.tele_station_name.th)}${st.tele_station_oldcode?' · '+esc(st.tele_station_oldcode):''}`,{direction:'top',offset:[0,-4]});
+    m.on('click',()=>openLivePopup(r));
+    r._m=m;liveLayer.addLayer(m);
+  });
+  updateLegend();
+}
+
+/* popup with latest values and 7-day charts */
+function lineChart(pts,{refs=[],unit='',label=''}){
+  const W=340,H=128,pl=42,pr=8,pt=8,pb=20;
+  const v=pts.filter(p=>p.v!==null);if(v.length<2)return `<p class="lc-empty">ไม่มีข้อมูล${label} 7 วันที่ผ่านมา</p>`;
+  const t0=v[0].t,t1=v[v.length-1].t;
+  const show=refs.filter(r=>r.v!==null&&r.v!==undefined&&r.inDomain!==false);
+  let lo=Math.min(...v.map(p=>p.v),...show.map(r=>r.v)),hi=Math.max(...v.map(p=>p.v),...show.map(r=>r.v));
+  if(hi-lo<0.2){hi+=0.1;lo-=0.1;}const pad=(hi-lo)*.08;lo-=pad;hi+=pad;
+  const x=t=>pl+(W-pl-pr)*(t-t0)/Math.max(1,t1-t0),y=val=>pt+(H-pt-pb)*(1-(val-lo)/(hi-lo));
+  const dec=hi-lo<5?2:hi-lo<50?1:0;
+  let s=`<svg viewBox="0 0 ${W} ${H}" class="chart lc" role="img" aria-label="${label}">`;
+  [lo+pad,(lo+hi)/2,hi-pad].forEach(val=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(val)}" y2="${y(val)}"/><text class="ax" x="${pl-4}" y="${y(val)+3}" text-anchor="end">${val.toFixed(dec)}</text>`;});
+  show.forEach(r=>{s+=`<line class="ref ${r.cls}" x1="${pl}" x2="${W-pr}" y1="${y(r.v)}" y2="${y(r.v)}"/><text class="refl ${r.cls}" x="${W-pr-2}" y="${y(r.v)-3}" text-anchor="end">${r.name}</text>`;});
+  let path='',pen=false,prev=null;
+  pts.forEach(p=>{if(p.v===null||(prev&&p.t-prev>3*3600e3)){pen=false;}if(p.v!==null){path+=(pen?'L':'M')+x(p.t).toFixed(1)+','+y(p.v).toFixed(1);pen=true;prev=p.t;}});
+  s+=`<path class="ln" d="${path}"/>`;
+  const last=v[v.length-1];s+=`<circle class="lp" cx="${x(last.t)}" cy="${y(last.v)}" r="3"/>`;
+  for(let d=new Date(t0);d.getTime()<=t1;d.setDate(d.getDate()+2)){const dd=new Date(d.toLocaleDateString('en-CA',{timeZone:'Asia/Bangkok'})+'T00:00:00+07:00').getTime();if(dd<t0)continue;
+    s+=`<text class="ax" x="${x(dd)}" y="${H-5}" text-anchor="middle">${new Date(dd).toLocaleDateString('th-TH',{day:'numeric',month:'short',timeZone:'Asia/Bangkok'})}</text>`;}
+  return s+`</svg>`;
+}
+function liveCard(r,g){
+  const st=r.station,s=sitOf(r),wl=nnum(r.waterlevel_msl),prev=nnum(r.waterlevel_msl_previous),bank=nnum(st.min_bank),q=nnum(r.discharge),pct=nnum(r.storage_percent),qmax=nnum(st.qmax);
+  const diff=wl!==null&&bank!==null?wl-bank:null,trend=wl!==null&&prev!==null?(wl>prev+.01?'▲ เพิ่มขึ้น':wl<prev-.01?'▼ ลดลง':'คงที่'):'';
+  const ag=r.agency&&r.agency.agency_shortname?r.agency.agency_shortname.th:'',geo=r.geocode||{};
+  let charts='<p class="lc-empty">กำลังโหลดข้อมูลย้อนหลัง 7 วัน…</p>';
+  if(g==='err')charts='<p class="lc-empty">โหลดข้อมูลย้อนหลังไม่สำเร็จ</p>';
+  else if(g&&g.graph_data){
+    const pts=g.graph_data.map(p=>({t:twTime(p.datetime),wl:nnum(p.value),q:nnum(p.discharge)})).sort((a,b)=>a.t-b.t);
+    const gb=nnum(g.min_bank)??bank,gl=nnum(g.ground_level)??nnum(st.ground_level),gq=nnum(g.qmax)??qmax,wlv=pts.map(p=>p.wl).filter(v=>v!==null),qv=pts.map(p=>p.q).filter(v=>v!==null);
+    const nearBank=wlv.length&&gb!==null&&gb-Math.max(...wlv)<Math.max(3,(Math.max(...wlv)-Math.min(...wlv))*3);
+    charts=`<div class="lc-h">ระดับน้ำ (ม.รทก.)</div>${lineChart(pts.map(p=>({t:p.t,v:p.wl})),{label:'ระดับน้ำ',refs:[{v:gb,name:'ตลิ่ง '+(gb!==null?gb.toFixed(2):''),cls:'bank',inDomain:nearBank},{v:gl,name:'ท้องน้ำ',cls:'ground',inDomain:false}]})}
+      ${!nearBank&&gb!==null&&wlv.length?`<p class="lc-note">ตลิ่งอยู่ที่ ${gb.toFixed(2)} ม.รทก. (สูงกว่าระดับน้ำ ${(gb-Math.max(...wlv)).toFixed(2)} ม. จึงไม่แสดงในกราฟ)</p>`:''}
+      ${qv.length?`<div class="lc-h">อัตราการไหล (ม³/วินาที)</div>${lineChart(pts.map(p=>({t:p.t,v:p.q})),{label:'อัตราการไหล',refs:[{v:gq,name:'ความจุลำน้ำ',cls:'bank',inDomain:gq!==null&&gq<Math.max(...qv)*2.5}]})}`:'<p class="lc-note">สถานีนี้ไม่รายงานอัตราการไหล</p>'}`;
+  }
+  return `<div class="lcard">
+    <div class="lc-top"><b>${esc(st.tele_station_name&&st.tele_station_name.th)}</b>${st.tele_station_oldcode?`<span class="code">${esc(st.tele_station_oldcode)}</span>`:''}
+      <small>${esc(r.river_name||'')}${geo.amphoe_name?' · อ.'+esc(geo.amphoe_name.th):''}${geo.province_name?' จ.'+esc(geo.province_name.th):''} · ${esc(ag)}</small></div>
+    <div class="lc-sit">${s?`<span class="spill s${s}">${SIT_TH[s]}</span>`:''}${isOld(r)?'<span class="spill old">ข้อมูลเก่า</span>':''}<span class="lc-time">${r.waterlevel_datetime?fmtTime(twTime(r.waterlevel_datetime)):''}</span></div>
+    <div class="lc-kv">
+      <div><b>${wl!==null?wl.toFixed(2):'–'}</b><span>ระดับน้ำ ม.รทก. ${trend?'· '+trend:''}</span></div>
+      <div><b>${diff!==null?Math.abs(diff).toFixed(2):'–'}</b><span>${diff===null?'เทียบตลิ่ง':diff<0?'ม. ต่ำกว่าตลิ่ง':'ม. สูงกว่าตลิ่ง'}</span></div>
+      <div><b>${pct!==null?Math.round(pct)+'%':'–'}</b><span>ความจุลำน้ำ</span></div>
+      <div><b>${q!==null?fmt(q,q<100?1:0):'–'}</b><span>อัตราการไหล ม³/วิ${qmax?` · จุ ${fmt(qmax,0)}`:''}</span></div>
+    </div>
+    ${charts}
+    <div class="lc-src">ข้อมูล: คลังข้อมูลน้ำแห่งชาติ (ThaiWater) · สสน. ร่วมกับ ${esc(ag)} · <a href="https://www.thaiwater.net/" target="_blank" rel="noopener">thaiwater.net</a></div>
+  </div>`;
+}
+async function openLivePopup(r){
+  const ll=r._m?r._m.getLatLng():[+r.station.tele_station_lat,+r.station.tele_station_long];
+  const p=L.popup({maxWidth:380,minWidth:300,className:'livepop',autoPanPadding:[40,40]}).setLatLng(ll).setContent(liveCard(r,null)).openOn(map);
+  const ymd=d=>d.toLocaleDateString('en-CA',{timeZone:'Asia/Bangkok'});
+  try{const g=(await getJSON(`${TW}waterlevel_graph?station_type=tele_waterlevel&station_id=${r.station.id}&start_date=${ymd(new Date(Date.now()-7*864e5))}&end_date=${ymd(new Date())}`)).data;
+    if(map.hasLayer(p))p.setContent(liveCard(r,g));}
+  catch(e){if(map.hasLayer(p))p.setContent(liveCard(r,'err'));}
+}
+
+/* legend */
+const legendCtl=L.control({position:'topleft'});
+legendCtl.onAdd=()=>{const d=L.DomUtil.create('div','livelegend');L.DomEvent.disableClickPropagation(d);return d;};
+function updateLegend(){const d=legendCtl.getContainer();if(!d)return;
+  const c={};(LIVE?LIVE.rows:[]).forEach(r=>{const s=sitOf(r);c[s]=(c[s]||0)+1;});
+  d.innerHTML=`<b>ระดับน้ำปัจจุบัน</b>${[5,4,3,2,1].map(s=>`<div><i style="background:var(--s${s})"></i>${SIT_TH[s]}<span>${c[s]||0}</span></div>`).join('')}<small>${LIVE?'ThaiWater · '+fmtTime(LIVE.t):''}</small>`;}
+map.on('overlayadd',e=>{if(e.layer===liveLayer){legendCtl.addTo(map);updateLegend();loadLive().catch(()=>{});}});
+map.on('overlayremove',e=>{if(e.layer===liveLayer)legendCtl.remove();});
+
+/* panel sections (country = whole Thailand, nan = basin 09) */
+function liveRowsHTML(rows,limit){
+  return rows.slice(0,limit).map(r=>{const st=r.station,s=sitOf(r),wl=nnum(r.waterlevel_msl),bank=nnum(st.min_bank),q=nnum(r.discharge),diff=wl!==null&&bank!==null?wl-bank:null;
+    return `<button class="lvrow" data-live="${st.id}"><span class="spill s${s}">${SIT_TH[s]||'–'}</span>
+      <span class="nm">${esc(st.tele_station_name&&st.tele_station_name.th)}${st.tele_station_oldcode&&!/^[A-Z]{3}\d{3}$/.test(st.tele_station_oldcode)?` <i>${esc(st.tele_station_oldcode)}</i>`:''}<small>${esc(r.geocode&&r.geocode.province_name?r.geocode.province_name.th:'')} · ${esc(r.agency&&r.agency.agency_shortname?r.agency.agency_shortname.th:'')}${isOld(r)?' · ข้อมูลเก่า':''}</small></span>
+      <span class="num">${diff!==null?(diff>=0?'+':'')+diff.toFixed(2)+' ม.':'–'}${q!==null?`<small>${fmt(q,q<100?1:0)} ม³/วิ</small>`:''}</span></button>`;}).join('');
+}
+function liveSummary(rows){const c={};rows.forEach(r=>{const s=sitOf(r);c[s]=(c[s]||0)+1;});
+  return `<div class="sitbar">${[5,4,3,2,1].map(s=>c[s]?`<i class="s${s}" style="flex:${c[s]}" title="${SIT_TH[s]} ${c[s]}"></i>`:'').join('')}</div>
+  <div class="sitcnt">${[5,4,3,2,1].map(s=>`<span><i style="background:var(--s${s})"></i>${SIT_TH[s]} <b>${c[s]||0}</b></span>`).join('')}</div>`;}
+const liveSort=(a,b)=>SIT_ORDER.indexOf(sitOf(a))-SIT_ORDER.indexOf(sitOf(b))||(nnum(b.storage_percent)||0)-(nnum(a.storage_percent)||0);
+function fillLive(){
+  const nat=document.getElementById('liveNation'),bas=document.getElementById('liveBasin');
+  const msg=liveErr?'<p class="lede">โหลดข้อมูลจาก ThaiWater ไม่สำเร็จ ลองรีเฟรชหน้าเว็บ</p>':'<p class="lede">กำลังโหลดข้อมูลจาก ThaiWater…</p>';
+  if(nat){if(!LIVE){nat.querySelector('.lvbody').innerHTML=msg;}else{
+    const rows=[...LIVE.rows].sort(liveSort),hot=rows.filter(r=>sitOf(r)>=4&&!isOld(r));
+    nat.querySelector('.lvbody').innerHTML=`<p class="lede" style="font-size:12.5px">${LIVE.rows.length} สถานีทั่วประเทศ · อัปเดต ${fmtTime(LIVE.t)} · คลิกจุดบนแผนที่เพื่อดูกราฟ 7 วัน</p>${liveSummary(LIVE.rows)}
+      ${hot.length?`<p class="lc-h" style="margin-top:10px">น้ำมากและล้นตลิ่ง (${hot.length})</p><div class="lvlist">${liveRowsHTML(hot,12)}</div>`:''}`;}}
+  if(bas){if(!LIVE){bas.querySelector('.lvbody').innerHTML=msg;}else{
+    const rows=LIVE.rows.filter(r=>r.basin&&+r.basin.basin_code===9).sort(liveSort);
+    bas.querySelector('.lvbody').innerHTML=`<p class="lede" style="font-size:12.5px">${rows.length} สถานีในลุ่มน้ำน่าน · อัปเดต ${fmtTime(LIVE.t)} · ตัวเลขขวา = ระดับน้ำเทียบตลิ่ง และอัตราการไหล</p>${liveSummary(rows)}<div class="lvlist">${liveRowsHTML(rows,60)}</div>`;}}
+  document.querySelectorAll('[data-live]').forEach(b=>b.onclick=()=>{const r=LIVE.rows.find(x=>String(x.station.id)===b.dataset.live);if(!r)return;
+    if(!map.hasLayer(liveLayer))liveLayer.addTo(map);map.flyTo(r._m.getLatLng(),Math.max(map.getZoom(),10),{duration:.6});map.once('moveend',()=>openLivePopup(r));});
+}
+const liveSection=(id,title)=>`<div class="sec" id="${id}"><h2>${title} <span class="realtag">ข้อมูลจริง</span></h2><div class="lvbody"><p class="lede">กำลังโหลดข้อมูลจาก ThaiWater…</p></div></div>`;
+
+map.createPane('live');map.getPane('live').style.zIndex=450;
+liveRenderer.options.pane='live';
+layersCtl.addOverlay(liveLayer,'ระดับน้ำปัจจุบัน (ThaiWater)');
+liveLayer.addTo(map);
+
+/* ---------- modelled flow from the ADPC report (HEC-HMS / HEC-RAS), Tapi example ---------- */
+const MF={
+  'X.217':{river:'แม่น้ำตาปี',place:'บ้านเคียนซา อ.เคียนซา',area:'6,740',
+    hms:[['สอบเทียบ 2555–2561',.76,.75,3.81],['ตรวจสอบ 2562–2567',.74,.73,-2.23],['ปีน้ำมาก 2559',.75,.75,-2.00],['ปีน้ำมาก 2563',.84,.78,-10.16]],
+    meanq:[['สอบเทียบ',184.77,177.99],['ตรวจสอบ',150.04,153.46]],
+    ras:[['2559 (สอบเทียบ)',.94,.94,.26],['2563 (ตรวจสอบ)',.94,.84,.51]],
+    obsPeaks:[['13 ม.ค. 2560',1345.0],['8 ธ.ค. 2563',1250.5]],
+    peaks:{'SSP2-4.5':[['2040s','10 Dec 2035',1020.15],['2060s','20 Nov 2065',839.63],['2080s','07 Jan 2084',958.81]],
+           'SSP3-7.0':[['2040s','09 Dec 2046',788.56],['2060s','30 Nov 2064',1108.17],['2080s','14 Dec 2080',1169.24]],
+           'SSP5-8.5':[['2040s','12 Nov 2050',1151.85],['2060s','04 Dec 2060',937.15],['2080s','11 Nov 2073',1002.57]]},
+    figs:[['x217_calibration','ช่วงสอบเทียบ 2555–2562 (จำลอง vs ตรวจวัด)'],['x217_validation','ช่วงตรวจสอบ 2562–2567'],['x217_cc_monthly','การไหลรายเดือนภายใต้ภูมิอากาศอนาคต'],['x217_severe_events','เหตุการณ์น้ำสูงสุดแต่ละฉากทัศน์และฝนที่เกี่ยวข้อง']],
+    note:'จุดออกของระบบลุ่มน้ำตาปีในแบบจำลอง HEC-HMS'},
+  'X.36':{river:'คลองพุมดวง',place:'บ้านท่าขนอน อ.คีรีรัฐนิคม',area:'2,975',
+    hms:[['สอบเทียบ 2553–2560',.48,.48,.09],['ตรวจสอบ 2561–2567',.39,.36,6.39],['ปีน้ำมาก 2559',.51,.47,-8.22],['ปีน้ำมาก 2563',.20,.16,-13.32]],
+    meanq:[['สอบเทียบ',149.29,149.16],['ตรวจสอบ',128.47,120.25]],
+    ras:[['2559 (สอบเทียบ)',1.00,1.00,.07],['2563 (ตรวจสอบ)',.98,.97,.18]],
+    obsPeaks:[],
+    peaks:{'SSP2-4.5':[['2040s','18 Sep 2047',781.77],['2060s','21 Aug 2070',838.28],['2080s','22 Sep 2086',900.03]],
+           'SSP3-7.0':[['2040s','29 Aug 2035',784.76],['2060s','08 Sep 2057',974.07],['2080s','29 Sep 2073',988.50]],
+           'SSP5-8.5':[['2040s','04 Aug 2039',773.79],['2060s','24 Aug 2067',871.38],['2080s','19 Aug 2084',904.41]]},
+    figs:[['x36_calibration','ช่วงสอบเทียบ 2553–2560 (จำลอง vs ตรวจวัด)'],['x36_validation','ช่วงตรวจสอบ 2561–2567'],['x36_cc_monthly','การไหลรายเดือนภายใต้ภูมิอากาศอนาคต'],['x36_severe_events','เหตุการณ์น้ำสูงสุดแต่ละฉากทัศน์และฝนที่เกี่ยวข้อง']],
+    note:'ท้ายเขื่อนรัชชประภา ~30 กม. การไหลถูกควบคุมโดยเขื่อน รายงานระบุให้ใช้ผลอย่างระมัดระวัง'}
+};
+function peakChart(st){
+  const m=MF[st],W=360,H=170,pl=40,pr=8,pt=10,pb=34,ssp=Object.keys(m.peaks),gw=(W-pl-pr)/3,bw=(gw-14)/3;
+  const ymax=Math.ceil(Math.max(...Object.values(m.peaks).flat().map(p=>p[2]),...m.obsPeaks.map(p=>p[1]))*1.15/200)*200;
+  const y=v=>pt+(H-pt-pb)*(1-v/ymax);
+  let s=`<svg viewBox="0 0 ${W} ${H}" class="chart mf" role="img" aria-label="อัตราการไหลสูงสุดจากแบบจำลอง ${st}">`;
+  [0,ymax/2,ymax].forEach(v=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pl-4}" y="${y(v)+3}" text-anchor="end">${v.toLocaleString('en-US')}</text>`;});
+  m.obsPeaks.forEach(p=>{s+=`<line class="ref bank" x1="${pl}" x2="${W-pr}" y1="${y(p[1])}" y2="${y(p[1])}"><title>ตรวจวัด ${p[0]}: ${p[1].toLocaleString('en-US')} ม³/วิ</title></line>`;});
+  if(m.obsPeaks.length){const top=Math.max(...m.obsPeaks.map(p=>p[1]));s+=`<text class="refl bank" x="${pl+4}" y="${y(top)-4}">ตรวจวัดสูงสุด: ${m.obsPeaks.map(p=>p[1].toLocaleString('en-US')+' ('+p[0]+')').join(' · ')}</text>`;}
+  ssp.forEach((k,gi)=>{m.peaks[k].forEach(([per,date,q],i)=>{const x=pl+gi*gw+7+i*bw;
+    s+=`<rect class="mfb p${i}${state.ssp===k&&state.per===per&&state.river===(st==='X.217'?'tapi':'phumduang')?' on':''}" x="${x+1}" y="${y(q)}" width="${bw-2}" height="${H-pb-y(q)}"><title>${k} ${per}: ${q.toLocaleString('en-US')} ม³/วิ (${date})</title></rect>`;});
+    s+=`<text class="ax" x="${pl+gi*gw+gw/2}" y="${H-18}" text-anchor="middle">${k}</text>`;});
+  s+=`<text class="ax" x="${pl}" y="${H-4}">แท่งซ้าย→ขวา: 2040s · 2060s · 2080s</text>`;
+  return s+'</svg>';
+}
+function mflowSection(){
+  state.mst=state.mst||'X.217';const st=state.mst,m=MF[st];
+  const tbl=(head,rows)=>`<div style="overflow-x:auto"><table class="sdt sk"><thead><tr>${head.map((h,i)=>`<th${i?' class="num"':''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${i?' class="num"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  return `<div class="sec" id="mflow"><h2>การไหลจากแบบจำลอง · รายงาน ADPC <span class="realtag" style="background:var(--tapi)">ผลแบบจำลอง</span></h2>
+    <div class="seg" role="group" aria-label="สถานี" style="margin-bottom:8px">${Object.keys(MF).map(k=>`<button data-mst="${k}" aria-pressed="${st===k}">${k}<small>${MF[k].river}</small></button>`).join('')}</div>
+    <p class="lede" style="font-size:12.5px">${m.place} · พื้นที่รับน้ำ ${m.area} ตร.กม. · ${m.note}</p>
+    <div class="lc-h" style="margin-top:8px">อัตราการไหลสูงสุดจากแบบจำลอง HEC-HMS แต่ละฉากทัศน์ (ม³/วินาที)</div>
+    ${peakChart(st)}
+    <div id="mflowLive" class="mflive"></div>
+    <div class="lc-h" style="margin-top:10px">ความแม่นยำ HEC-HMS (อัตราการไหลรายวัน)</div>
+    ${tbl(['ช่วง','R²','NSE','PBIAS %'],m.hms.map(r=>[r[0],r[1].toFixed(2),r[2].toFixed(2),r[3].toFixed(2)]))}
+    ${tbl(['ค่าเฉลี่ย ม³/วิ','จำลอง','ตรวจวัด'],m.meanq.map(r=>[r[0],r[1].toFixed(2),r[2].toFixed(2)]))}
+    <div class="lc-h" style="margin-top:10px">ความแม่นยำ HEC-RAS (ระดับน้ำรายวัน)</div>
+    ${tbl(['ปี','R²','NSE','RMSE ม.'],m.ras.map(r=>[r[0],r[1].toFixed(2),r[2].toFixed(2),r[3].toFixed(2)]))}
+    <div class="lc-h" style="margin-top:10px">กราฟจากรายงาน (คลิกเพื่อดูขนาดเต็ม)</div>
+    <div class="figs">${m.figs.map(([f,cap])=>`<a href="figures/adpc/${f}.jpg" target="_blank" rel="noopener"><img src="figures/adpc/${f}.jpg" alt="${cap}" loading="lazy"><span>${cap}</span></a>`).join('')}</div>
+    <p class="note" style="border:0;padding-top:6px">ที่มา: รายงานฉบับสมบูรณ์ ADPC (ลุ่มน้ำตาปี) ตารางที่ 21–24, 27, 32 และรูปที่ 20–24, 30–31, 53–54 · ไม่ใช่ผลของโครงการนี้ ใช้แสดงรูปแบบการนำเสนอผลแบบจำลองการไหล</p>
+  </div>`;
+}
+function fillMflowLive(){
+  const el=document.getElementById('mflowLive');if(!el)return;
+  if(!LIVE){el.innerHTML='';loadLive().then(fillMflowLive).catch(()=>{});return;}
+  const r=LIVE.rows.find(x=>x.station.tele_station_oldcode===state.mst);
+  if(!r){el.innerHTML=`<p class="lc-note">ไม่พบสถานี ${state.mst} ในข้อมูล ThaiWater ขณะนี้</p>`;return;}
+  const q=nnum(r.discharge),wl=nnum(r.waterlevel_msl),s=sitOf(r);
+  el.innerHTML=`<button class="lvrow" data-live="${r.station.id}"><span class="spill s${s}">${SIT_TH[s]||'–'}</span><span class="nm">ตอนนี้ที่ ${esc(r.station.tele_station_name.th)} (${state.mst})<small>ThaiWater · ${fmtTime(twTime(r.waterlevel_datetime))}${isOld(r)?' · ข้อมูลเก่า':''} · คลิกดูกราฟ 7 วัน</small></span><span class="num">${q!==null?fmt(q,q<100?1:0)+' ม³/วิ':(wl!==null?wl.toFixed(2)+' ม.รทก.':'–')}</span></button>`;
+  el.querySelector('[data-live]').onclick=()=>{if(!map.hasLayer(liveLayer))liveLayer.addTo(map);map.flyTo(r._m.getLatLng(),Math.max(map.getZoom(),11),{duration:.6});map.once('moveend',()=>openLivePopup(r));};
+}
 
 document.addEventListener('keydown',ev=>{
   if(/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
