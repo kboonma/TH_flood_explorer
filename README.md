@@ -14,7 +14,7 @@ Prototype of the decision-support dashboard (activity 3) in the NRCT 2027 propos
 |---|---|
 | 1. Rainfall forecast: accumulation, intensity, spatial map, lead time | Daily / accumulated rain map with a 10-day time bar and play; switch between AI-fused, TMD-WRF, ECMWF and GFS; basin-mean chart showing the spread between models |
 | 2. Hydrology: discharge, water level, hydrographs | Station hydrographs: observed (7 days) + forecast median and 10–90% band, watch and bank-full thresholds, probability of exceeding bank-full; Sirikit Dam inflow and storage |
-| 3. Hydrodynamics: flood extent, depth, velocity, risk areas | Slot for HEC-RAS / surrogate-model output; the Tapi climate-scenario dataset demonstrates the flood-map display |
+| 3. Hydrodynamics: flood extent, depth, velocity, risk areas | Slot for HEC-RAS / surrogate-model output; the Tapi climate-scenario example demonstrates the flood-map display and modelled peak flow |
 | 4. Decision support: alert level, affected areas, trend, uncertainty | Alert levels (normal / watch / warning / critical) per station and per day; affected districts table and map; peak timing; forecast-skill comparison (POD, FAR, CSI, NSE, KGE) |
 
 Views: national (22 ONWR basins) → basin (Nan) → local (district/station), as in §6.5.3.
@@ -31,8 +31,7 @@ Situation classes follow ThaiWater: น้ำน้อยวิกฤต · น�
 - `geo/nan_basin_amphoe.geojson` — 48 districts mostly inside the Nan basin (RTSD/OCHA COD-AB).
 - `geo/tha_basins22_onwr_*.geojson` — 22 main river basins, Royal Decree on River Basins B.E. 2564, ONWR (obtained via [pratikkhanal16/thailand-water-storage-dss](https://github.com/pratikkhanal16/thailand-water-storage-dss)).
 - `geo/tha_provinces_*`, `geo/tha_country_*`, `geo/surat_*` — Royal Thai Survey Department via [OCHA COD-AB](https://data.humdata.org/dataset/cod-ab-tha) (CC BY-IGO).
-- `figures/adpc/` — modelled-flow figures (HEC-HMS calibration/validation, climate-change monthly flow, severe-event hydrographs) for X.217 and X.36 from the same ADPC report; shown with the report's skill scores (Tables 21–24, 27) and scenario peak flows (Table 32) in the Tapi view.
-- `flood/`, `thumb/` — example flood-depth layers (Tapi basin, 18 CMIP6 scenarios) georeferenced from an earlier ADPC project report; used to demonstrate flood-map display.
+- `flood/`, `thumb/` — example flood-depth layers (Tapi basin, 18 CMIP6 climate scenarios); used to demonstrate the flood-map display.
 - Basemaps: © Esri, © OpenStreetMap contributors. Neighbouring countries: Natural Earth.
 
 ## Tools
