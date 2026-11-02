@@ -6,7 +6,7 @@
 <meta name="description" content="FloodCast TH: flood forecasting and monitoring dashboard for Thailand. Pilot: Tapi basin, Surat Thani.">
 <title>FloodCast TH</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap">
 <style>/* required styles */
 
 .leaflet-pane,
@@ -683,9 +683,9 @@ svg.leaflet-image-layer.leaflet-interactive path {
   --c1:#fde6c8; --c2:#fbc48a; --c3:#f39a52; --c4:#dd6b2c; --c5:#b0421b;
   --s1:#9a5b22; --s2:#e2b33b; --s3:#3f9b5a; --s4:#2f78c4; --s5:#d03a2f;
   --fc:#0f7c8c; --fc-fill:#d3ecef; --a0:#2f7d4f; --a0-fill:#e2f1e7; --a1:#d9a400; --a1-fill:#fbf1cc; --a1-ink:#8a6400; --a2:#e0711d; --a2-fill:#fbe3cf; --a2-ink:#a8500f; --a3:#c8312a;
-  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
-  --f-body:"IBM Plex Sans Thai",system-ui,sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --f-display:"Kanit",system-ui,sans-serif;
+  --f-body:"Kanit",system-ui,sans-serif;
+  --f-mono:"Kanit",system-ui,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --sea:#0f1b20; --land:#1d2c31; --land-edge:#3a5057; --nb:#152227;
@@ -1065,6 +1065,90 @@ aside::-webkit-scrollbar{width:8px} aside::-webkit-scrollbar-thumb{background:rg
 .rvst .num{font-family:var(--f-mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .rvst .num small{display:block;color:var(--ink-3);font-size:10.5px}
 .rvno{width:18px;height:18px;border-radius:50%;background:#ffb347;color:#1a1206;font:700 10.5px/18px var(--f-mono);text-align:center;box-shadow:0 0 0 2px rgba(11,16,20,.85);cursor:pointer}
+
+/* ---------- demo: forecast → flood ---------- */
+.dcta{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;
+  background:linear-gradient(120deg,rgba(255,122,69,.22),rgba(79,184,238,.14));border:1px solid rgba(255,122,69,.55);border-radius:12px;padding:12px 14px;margin:2px 0 14px}
+.dcta:hover{border-color:var(--accent);background:linear-gradient(120deg,rgba(255,122,69,.3),rgba(79,184,238,.2))}
+.dcta:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+.dcta .pl{grid-row:span 2;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:14px;box-shadow:0 2px 10px rgba(255,122,69,.45)}
+.dcta b{font-size:14.5px}
+.dcta small{color:var(--ink-2);font-size:12px}
+.dpipe{list-style:none;margin:0 0 14px;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;counter-reset:none}
+.dpipe li{position:relative}
+.dpipe li+li::before{content:'›';position:absolute;left:-6px;top:9px;color:var(--ink-3);font-size:14px}
+.dpipe button{width:100%;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;font:inherit;font-size:11px;color:var(--ink-3);background:none;border:0;border-radius:8px;cursor:pointer}
+.dpipe button i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:12px;
+  background:rgba(255,255,255,.08);color:var(--ink-2);border:1px solid var(--line)}
+.dpipe button.done i{background:rgba(79,184,238,.25);color:#bfe6fa;border-color:transparent}
+.dpipe button.on{color:var(--ink)}
+.dpipe button.on i{background:var(--accent);color:#fff;border-color:transparent;box-shadow:0 0 0 3px rgba(255,122,69,.25)}
+.dpipe button:hover{background:rgba(255,255,255,.05)}
+.dpipe button:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
+.dbody{min-height:200px}
+.dlead{font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:0 0 10px}
+.dlead b{color:var(--ink)}
+.dsrc{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin:10px 0 0}
+.dtag{display:inline-block;font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:999px;margin-right:4px;vertical-align:1px}
+.dtag.real{background:rgba(52,199,89,.18);color:#7ee2a0}
+.dtag.dev{background:rgba(255,122,69,.2);color:#ffb08f}
+.dmodel{font-size:12px;color:var(--ink-2);background:rgba(255,122,69,.08);border:1px dashed rgba(255,122,69,.5);border-radius:8px;padding:7px 10px;margin:0 0 8px}
+.dq-cap{stroke:#ff6b6b;stroke-width:1.2;stroke-dasharray:5 4}
+.dq-70{stroke:var(--s4);stroke-width:1;stroke-dasharray:2 3}
+.dq-lab{font-family:var(--f-mono);font-size:9.5px;fill:#ff9b9b}
+.dq-lab.s4{fill:#8cc4ff}
+.dq-lab.pk{fill:var(--ink);font-weight:600}
+.dq-area{fill:rgba(79,184,238,.18)}
+.dq-ln{fill:none;stroke:#4fb8ee;stroke-width:2;stroke-linejoin:round}
+.dq-pk{fill:var(--accent);stroke:#fff;stroke-width:1.5}
+.dqrow{display:flex;align-items:center;gap:10px;margin:4px 0 8px}
+.dqrow input{flex:1;accent-color:var(--accent)}
+.dqrow output{font-family:var(--f-mono);font-size:20px;font-weight:700;min-width:58px;text-align:right}
+.dqrow .u{font-size:11.5px;color:var(--ink-3)}
+.dpresets{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.dpresets button{font:inherit;font-size:11.5px;color:var(--ink-2);background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:4px 10px;cursor:pointer}
+.dpresets button[aria-pressed="true"]{background:var(--ink);color:#0e1418;border-color:transparent}
+.dpresets button:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
+.dl-pt{fill:#2a5a74;stroke:#7fcbf2;stroke-width:1.2;cursor:default}
+.dl-pt.on{fill:var(--accent);stroke:#fff;stroke-width:2}
+.dl-now{stroke:var(--accent);stroke-width:1.5;stroke-dasharray:4 3}
+.dl-link{stroke:var(--accent);stroke-width:1;opacity:.6}
+.dpick{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:6px}
+.dpick b{color:var(--ink)}
+.dpick span b{font-family:var(--f-mono);font-size:15px;color:var(--accent)}
+.dalert{display:grid;gap:2px;border-radius:12px;padding:10px 14px;margin:0 0 10px;border:1px solid var(--line);background:rgba(255,255,255,.04);border-left:5px solid var(--ink-3)}
+.dalert span{font-size:11.5px;color:var(--ink-3)}
+.dalert b{font-size:20px}
+.dalert small{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-2)}
+.dalert.s5{border-left-color:var(--s5)} .dalert.s5 b{color:var(--s5)}
+.dalert.s4{border-left-color:var(--s4)} .dalert.s4 b{color:var(--s4)}
+.dalert.s3{border-left-color:var(--s3)} .dalert.s3 b{color:var(--s3)}
+.dalert.s2{border-left-color:var(--s2)} .dalert.s1{border-left-color:var(--s1)}
+.dimp{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 10px}
+.dimp div{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:8px}
+.dimp b{display:block;font-family:var(--f-mono);font-size:19px}
+.dimp span{font-size:11px;color:var(--ink-3)}
+.ax-t{font-size:11px;color:var(--ink-3);margin:2px 0 0}
+.dexit{width:100%;margin-top:12px;font:inherit;font-size:13px;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:10px;padding:9px;cursor:pointer}
+.dexit:hover{background:rgba(255,255,255,.1)}
+.dnav{position:sticky;bottom:-16px;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px -16px -16px;padding:10px 16px;
+  background:var(--glass-2);border-top:1px solid var(--line);border-radius:0 0 14px 14px}
+.dnav span{font-size:11.5px;color:var(--ink-3)}
+.dnav button{font:inherit;font-size:13px;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:9px;padding:7px 14px;cursor:pointer}
+.dnav button.pri{background:var(--accent);border-color:transparent;color:#fff;font-weight:600}
+.dnav button:disabled{opacity:.35;cursor:default}
+.dnav button:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
+.dpulse{position:relative;width:0;height:0}
+.dpulse i{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(255,122,69,.6);animation:dpulse 1.6s ease-out infinite;border:2px solid #fff}
+.dpulse b{position:absolute;left:13px;top:-10px;font-family:var(--f-mono);font-size:12px;color:#fff;background:var(--accent);padding:1px 6px;border-radius:6px;white-space:nowrap}
+@keyframes dpulse{to{box-shadow:0 0 0 18px rgba(255,122,69,0)}}
+@media (prefers-reduced-motion:reduce){.dpulse i{animation:none}}
+@media (max-width:820px){.dnav{bottom:-16px}}
+
+/* Kanit everywhere */
+body,button,input,select,textarea,.leaflet-container,.leaflet-container *,.leaflet-popup-content,.leaflet-tooltip,svg text{font-family:"Kanit",system-ui,sans-serif!important}
+body{font-weight:300}
+b,strong,h1,h2,.big,.t{font-weight:500}
 </style>
 
 </head>
@@ -1187,6 +1271,7 @@ function showFlood(){
 /* ---------- country view ---------- */
 const panel=document.getElementById('panel'), crumb=document.getElementById('crumb');
 function clearPilotLayers(){
+  if(window.__demoReady&&state.view==='demo')endDemo();
   if(current){map.removeLayer(current);current=null;}
   map.removeLayer(stLayer); map.removeLayer(frame); map.removeLayer(amphLayer); tambonLayer&&map.removeLayer(tambonLayer);
   map.removeLayer(tapiStLayer); setTimeout(syncWtl,0); window.__rivReady&&riverBadges.clearLayers();
@@ -1204,6 +1289,7 @@ function openCountry(){
       <p class="lede">ฝน ระดับน้ำ อัตราการไหล และพื้นที่น้ำท่วม · พื้นที่นำร่องคือลุ่มน้ำตาปี จ.สุราษฎร์ธานี แล้วขยายผลสู่ลุ่มน้ำอื่นตาม 22 ลุ่มน้ำหลักของ สทนช.</p></div>
     <div class="sec ctlrow">
       <button class="basin-row ready" data-id="${PILOT.id}"><span class="n">${PILOT.code}</span><span><b>ลุ่มน้ำตาปี</b><small style="display:block;color:var(--ink-3)">ลุ่มน้ำ${PILOT.name} · ฝน · ระดับน้ำ · อัตราการไหล · พื้นที่น้ำท่วม</small></span><span class="tag">นำร่อง</span></button>
+      <button class="dcta" id="dcta"><span class="pl" aria-hidden="true">▶</span><b>สาธิต: ฝนพยากรณ์ → แผนที่น้ำท่วม</b><small>ดูว่าระบบของโครงการทำงานอย่างไร ใน 4 ขั้น</small></button>
     </div>
     ${rainSection()}
     ${liveSection('liveNation','สถานการณ์น้ำปัจจุบัน · ทั่วประเทศ')}
@@ -1213,6 +1299,7 @@ function openCountry(){
     <p class="note">ขอบเขตประเทศและจังหวัดจากกรมแผนที่ทหาร (OCHA COD-AB) · 22 ลุ่มน้ำหลัก: สำนักงานทรัพยากรน้ำแห่งชาติ (สทนช.)</p>`;
   panel.querySelectorAll('.basin-row').forEach(b=>b.onclick=()=>{const p=basinLayers[b.dataset.id].feature.properties; p.pilot?openTapi(): map.flyToBounds(basinLayers[b.dataset.id].getBounds(),{duration:.6,maxZoom:8});});
   fillLive(); fillRain();
+  const dc=document.getElementById('dcta'); if(dc)dc.onclick=()=>openDemo(0);
 }
 
 
@@ -1263,6 +1350,7 @@ function renderPanel(keep){
   panel.innerHTML=`
     <div class="sec"><p class="big">ลุ่มน้ำตาปี · ฉากทัศน์น้ำท่วม</p>
       <p class="lede">พื้นที่น้ำท่วม ณ วันที่น้ำสูงสุดภายใต้ภูมิอากาศอนาคต และอัตราการไหลที่สถานีหลัก</p></div>
+    <button class="dcta" id="dcta"><span class="pl" aria-hidden="true">▶</span><b>สาธิต: ฝนพยากรณ์ → แผนที่น้ำท่วม</b><small>ดูว่าระบบของโครงการทำงานอย่างไร ใน 4 ขั้น</small></button>
     <div class="sec ctlrow">
       <label class="l">ฉากทัศน์ภูมิอากาศ</label>
       <div class="seg" role="group" aria-label="ฉากทัศน์">${SSP.map(s=>`<button data-ssp="${s}" aria-pressed="${state.ssp===s}">${s}</button>`).join('')}</div>
@@ -1294,6 +1382,7 @@ function renderPanel(keep){
   panel.querySelectorAll('[data-tst]').forEach(b=>b.onclick=()=>{const id=b.dataset.tst;const m=tapiStLayer.getLayers().find(l=>l.options.title===id);if(m)map.panTo(m.getLatLng());selectTapiSt(id,true);});
   document.getElementById('op').oninput=ev=>{state.opacity=+ev.target.value; current&&current.setOpacity(state.opacity);};
   fillTapiRain(); fillLive(); window.__rivReady&&fillRiver();
+  document.getElementById('dcta').onclick=()=>openDemo(0);
 }
 function update(){ showFlood(); drawTapiStations(); renderPanel(true); }
 
@@ -1487,7 +1576,7 @@ function renderRainCtl(){if(!RAIN||!document.getElementById('wtlKnob'))return;co
   document.getElementById('wtlLabel').textContent=rainDay(RAIN.times[rstate.k])+' '+RAIN.times[rstate.k].split('T')[1];
   document.getElementById('wtlTrack').setAttribute('aria-valuenow',rstate.k);
   const pb=document.getElementById('wtlPlay');pb.textContent=rstate.timer?'❚❚':'▶';pb.setAttribute('aria-label',rstate.timer?'หยุด':'เล่น');}
-function setRainHour(k){rstate.k=k;if(rainImg)rainImg.setUrl('data/rain_hourly/'+RAIN.frames[k]);renderRainCtl();updateRainPanel();if(state.view==='tapi'){const el=document.getElementById('tapiRain');if(el){el.querySelectorAll('rect.trb').forEach(r=>r.classList.toggle('on',+r.dataset.h===k));const v=el.querySelectorAll('.kv b')[1];if(v)v.textContent=RAIN.basins['19'].hourly[k].toFixed(2);}}}
+function setRainHour(k){rstate.k=k;if(rainImg)rainImg.setUrl('data/rain_hourly/'+RAIN.frames[k]);renderRainCtl();updateRainPanel();if(state.view==='tapi'||state.view==='demo'){const el=document.getElementById('tapiRain');if(el){el.querySelectorAll('rect.trb').forEach(r=>r.classList.toggle('on',+r.dataset.h===k));const v=el.querySelectorAll('.kv b')[1];if(v)v.textContent=RAIN.basins['19'].hourly[k].toFixed(2);}}}
 function stopRain(){if(rstate.timer){clearInterval(rstate.timer);rstate.timer=null;renderRainCtl();}}
 function toggleRainPlay(){if(rstate.timer)stopRain();else{rstate.timer=setInterval(()=>setRainHour((rstate.k+1)%RAIN.frames.length),400);renderRainCtl();}}
 function syncWtl(){wtl.hidden=!(map.hasLayer(rainLayer)&&RAIN);}
@@ -1643,6 +1732,153 @@ RAIL_OVL.splice(2,0,{k:'river',label:'ลำน้ำ',layer:riverLayer});
 syncRail();
 window.__rivReady=true;
 loadRivers().catch(()=>{});
+
+
+/* ---------- demo: forecast rainfall → river flow → flood map library → impact ----------
+   Uses data already in hand: the team's 72-h forecast rainfall, the observed X.217 hydrograph of the
+   late-November 2025 event (ThaiWater), and the library of pre-computed Tapi flood maps. */
+const DEMO_Q={t0:Date.parse('2025-11-20T01:00:00+07:00'),step:3*3600e3,qmax:1400,bank:6.10,peakWL:4.75,
+  q:[193,195,203,206,215,226,229,235,238,243,246,250,254,260,263,266,266,266,267,267,268,272,274,274,275,275,278,278,279,282,285,287,288,289,292,292,293,295,299,300,303,304,308,310,316,321,339,354,369,388,419,458,501,528,548,576,598,616,641,660,675,688,700,713,719,729,739,742,749,753,760,760,763,770,770,774,774,777,777,784,781,784,784,781,784,784,788,784,781,784,781,777,777,770,767,763,760,756,753,749,742,735,732,726,719,713,710,704,697,691,685,675,669,663,653,647,644,638,629,622,616,607,601,604,595,591,585,576,570,564,557,551,548,541,533,531,523,518,513,508,503,498,491,486,481,476,468,463,458,451,446,441,435,430,426,422,415,408,404,398,394,390,386,381,375,369,363,360]};
+const DEMO_LIB=D.events.filter(e=>e.event_id.startsWith('tapi_')).map(e=>({id:e.event_id,q:+e.peak_discharge_m3s,a:+e.flooded_km2_total,m:+e.flooded_km2_mueang,p:+e.flooded_km2_phunphin,sea:+e.max_sea_level_masl}))
+  .sort((a,b)=>a.q-b.q).map((x,i)=>({...x,no:i+1}));
+const DEMO={step:0,q:790};
+const DSTEPS=[{k:'rain',t:'ฝนพยากรณ์'},{k:'flow',t:'อัตราการไหล'},{k:'flood',t:'แผนที่น้ำท่วม'},{k:'impact',t:'ผลกระทบ'}];
+const dateY=t=>new Date(t).toLocaleDateString('th-TH-u-ca-gregory',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Bangkok'});
+const demoPick=()=>DEMO_LIB.reduce((b,x)=>Math.abs(x.q-DEMO.q)<Math.abs(b.q-DEMO.q)?x:b,DEMO_LIB[0]);
+const sitFromPct=p=>p>100?5:p>70?4:p>30?3:p>10?2:1;
+const x217=L.marker([8.8474,99.1989],{icon:L.divIcon({className:'',html:'<div class="dpulse"><i></i><b>X.217</b></div>',iconSize:[0,0]}),interactive:false,keyboard:false,zIndexOffset:900});
+
+function hydroSVG(){
+  const W=360,H=150,pl=36,pr=8,pt=10,pb=22,n=DEMO_Q.q.length,ymax=1500;
+  const x=i=>pl+(W-pl-pr)*i/(n-1),y=v=>pt+(H-pt-pb)*(1-v/ymax);
+  const pk=DEMO_Q.q.indexOf(Math.max(...DEMO_Q.q));
+  let s=`<svg viewBox="0 0 ${W} ${H}" class="chart" role="img" aria-label="อัตราการไหลที่ X.217 เหตุการณ์ปลายพฤศจิกายน 2025">`;
+  [0,500,1000,1500].forEach(v=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pl-4}" y="${y(v)+3}" text-anchor="end">${fmt(v,0)}</text>`;});
+  s+=`<line class="dq-cap" x1="${pl}" x2="${W-pr}" y1="${y(DEMO_Q.qmax)}" y2="${y(DEMO_Q.qmax)}"/><text class="dq-lab" x="${W-pr}" y="${y(DEMO_Q.qmax)-4}" text-anchor="end">ความจุลำน้ำ ${fmt(DEMO_Q.qmax,0)}</text>`;
+  s+=`<line class="dq-70" x1="${pl}" x2="${W-pr}" y1="${y(DEMO_Q.qmax*.7)}" y2="${y(DEMO_Q.qmax*.7)}"/><text class="dq-lab s4" x="${W-pr}" y="${y(DEMO_Q.qmax*.7)-4}" text-anchor="end">น้ำมาก (70%)</text>`;
+  const pts=DEMO_Q.q.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`);
+  s+=`<path class="dq-area" d="M${x(0)},${y(0)}L${pts.join('L')}L${x(n-1)},${y(0)}Z"/><path class="dq-ln" d="M${pts.join('L')}"/>`;
+  s+=`<circle class="dq-pk" cx="${x(pk)}" cy="${y(DEMO_Q.q[pk])}" r="4"/><text class="dq-lab pk" x="${x(pk)}" y="${y(DEMO_Q.q[pk])-9}" text-anchor="middle">สูงสุด ${fmt(DEMO_Q.q[pk],0)}</text>`;
+  for(let d=0;d<=20;d+=5){const t=Date.parse('2025-11-20T00:00:00+07:00')+d*864e5,i=(t-DEMO_Q.t0)/DEMO_Q.step;if(i<0||i>n-1)continue;
+    s+=`<text class="ax" x="${x(i)}" y="${H-6}" text-anchor="${d===20?'end':'middle'}">${dateY(t)}</text>`;}
+  return s+'</svg>';
+}
+function libSVG(sel){
+  const W=360,H=150,pl=36,pr=10,pt=12,pb=26,q0=700,q1=1250,a0=100,a1=280;
+  const x=v=>pl+(W-pl-pr)*(v-q0)/(q1-q0),y=v=>pt+(H-pt-pb)*(1-(v-a0)/(a1-a0));
+  let s=`<svg viewBox="0 0 ${W} ${H}" class="chart" role="img" aria-label="คลังแผนที่น้ำท่วม: อัตราการไหลสูงสุดกับพื้นที่น้ำท่วม">`;
+  [100,150,200,250].forEach(v=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pl-4}" y="${y(v)+3}" text-anchor="end">${v}</text>`;});
+  [700,800,900,1000,1100,1200].forEach(v=>{s+=`<text class="ax" x="${x(v)}" y="${H-12}" text-anchor="middle">${fmt(v,0)}</text>`;});
+  s+=`<text class="ax" x="${(pl+W-pr)/2}" y="${H-1}" text-anchor="middle">อัตราการไหลสูงสุดที่ X.217 (ม³/วิ)</text><text class="ax" x="4" y="${pt-2}">ตร.กม.</text>`;
+  s+=`<line class="dl-now" x1="${x(DEMO.q)}" x2="${x(DEMO.q)}" y1="${pt}" y2="${H-pb}"/>`;
+  DEMO_LIB.forEach(m=>{s+=`<circle class="dl-pt${m===sel?' on':''}" data-lib="${m.no}" cx="${x(m.q)}" cy="${y(m.a)}" r="${m===sel?7:5}"><title>แผนที่ #${m.no} · ${fmt(m.q,0)} ม³/วิ · ${fmt(m.a,0)} ตร.กม.</title></circle>`;});
+  s+=`<line class="dl-link" x1="${x(DEMO.q)}" y1="${y(sel.a)}" x2="${x(sel.q)}" y2="${y(sel.a)}"/>`;
+  return s+'</svg>';
+}
+function demoMap(){
+  const st=DSTEPS[DEMO.step].k, pick=demoPick();
+  if(current){map.removeLayer(current);current=null;}
+  map.removeLayer(x217);
+  if(st==='rain'){
+    if(!map.hasLayer(rainLayer))rainLayer.addTo(map);
+    const go=()=>{if(DSTEPS[DEMO.step].k==='rain'&&state.view==='demo'&&!rstate.timer&&RAIN)toggleRainPlay();};
+    RAIN?go():loadRain().then(go).catch(()=>{});
+    const bb=RIV_G?L.geoJSON(RIV_G).getBounds():L.latLngBounds(FB);map.flyToBounds(bb.pad(.15),{duration:.8,paddingTopLeft:[pclosed()?0:400,60]});
+  }else{
+    stopRain(); if(map.hasLayer(rainLayer))map.removeLayer(rainLayer);
+  }
+  if(st==='flow'){x217.addTo(map);RSEL.name='แม่น้ำตาปี';window.__rivReady&&drawRivers();map.flyTo([8.95,99.15],10,{duration:.8});}
+  if(st==='flood'||st==='impact'){
+    state.river='tapi';const [,sk,per]=pick.id.split('_');state.ssp=Object.keys(SSPK).find(k=>SSPK[k]===sk);state.per=per;
+    showFlood(); x217.addTo(map);
+    if(DEMO._fit!=='flood'){map.flyToBounds(FB,{padding:[10,10],duration:.8});DEMO._fit='flood';}
+  }else DEMO._fit=null;
+  setTimeout(()=>{syncWtl();window.__railReady&&syncRail();},0);
+}
+const pclosed=()=>document.querySelector('.app').classList.contains('pclosed');
+function demoBody(){
+  const st=DSTEPS[DEMO.step].k, pick=demoPick(), pct=DEMO.q/DEMO_Q.qmax*100, s=sitFromPct(pct);
+  if(st==='rain') return `
+    <p class="dlead">ระบบรับ<b>ฝนพยากรณ์รายชั่วโมงล่วงหน้า 72 ชม.</b> (ความละเอียด 0.1° ≈ 11 กม.) แล้วสรุปเป็นฝนเฉลี่ยของลุ่มน้ำทุกชั่วโมง ดูฝนเคลื่อนตัวบนแผนที่ได้จากแถบเวลาด้านล่าง</p>
+    <div id="tapiRain"></div>
+    <p class="dsrc"><span class="dtag real">ข้อมูลจริง</span> ฝนพยากรณ์จากทีมโครงการ 11–13 ธ.ค. 2025</p>`;
+  if(st==='flow') return `
+    <p class="dlead">แกนหลักของโครงการ: <b>โมเดล AI ร่วมกับแบบจำลองอุทกวิทยา</b> แปลงฝนพยากรณ์เป็นอัตราการไหลล่วงหน้าที่สถานีหลัก <b>X.217 บ้านเคียนซา</b> ก่อนน้ำถึงตัวเมืองสุราษฎร์ธานี</p>
+    <div class="dmodel"><span class="dtag dev">กำลังพัฒนา</span> โมเดลพยากรณ์ของโครงการจะสร้างกราฟแบบนี้ล่วงหน้า 5–10 วัน</div>
+    ${hydroSVG()}
+    <div class="kv"><div><b>${fmt(788,0)}</b><span>สูงสุด ม³/วิ · 30 พ.ย. 2025</span></div><div><b>56%</b><span>ของความจุลำน้ำ</span></div><div><b>4.75</b><span>ระดับน้ำ ม.รทก. (ตลิ่ง 6.10)</span></div></div>
+    <p class="dsrc"><span class="dtag real">ข้อมูลจริง</span> อัตราการไหลที่วัดได้ที่ X.217 เหตุการณ์ 20 พ.ย.–10 ธ.ค. 2025 (ThaiWater) ใช้แทน "ผลที่โมเดลต้องพยากรณ์ได้"</p>`;
+  if(st==='flood') return `
+    <p class="dlead">นำอัตราการไหลสูงสุดที่พยากรณ์ได้ไป<b>ค้นแผนที่น้ำท่วมที่ใกล้เคียงที่สุดจากคลังแผนที่</b>ซึ่งคำนวณไว้ล่วงหน้าด้วยแบบจำลองชลศาสตร์ ได้แผนที่ทันทีโดยไม่ต้องรอรันแบบจำลองใหม่</p>
+    <label class="l" for="dq">อัตราการไหลสูงสุดที่พยากรณ์ได้ที่ X.217</label>
+    <div class="dqrow"><input id="dq" type="range" min="700" max="1250" step="10" value="${DEMO.q}"><output id="dqv">${fmt(DEMO.q,0)}</output><span class="u">ม³/วิ</span></div>
+    <div class="dpresets" role="group" aria-label="ตัวอย่างค่าพยากรณ์">
+      <button data-dq="790" aria-pressed="${DEMO.q===790}">เหตุการณ์ 30 พ.ย. 2025</button>
+      <button data-dq="950" aria-pressed="${DEMO.q===950}">ฝนหนักขึ้น +20%</button>
+      <button data-dq="1180" aria-pressed="${DEMO.q===1180}">ฝนหนักขึ้น +50%</button></div>
+    ${libSVG(pick)}
+    <div class="dpick"><b>แผนที่ #${pick.no}</b> จากคลัง ${DEMO_LIB.length} แผนที่ · อัตราการไหลสูงสุด ${fmt(pick.q,0)} ม³/วิ<span>พื้นที่น้ำท่วม <b>${fmt(pick.a,0)} ตร.กม.</b></span></div>
+    <p class="dsrc"><span class="dtag real">ผลจริง</span> คลังแผนที่ = แผนที่ความลึกน้ำท่วม อ.เมืองสุราษฎร์ธานี–อ.พุนพิน จากแบบจำลองน้ำหลากแม่น้ำตาปีในงานที่ผ่านมา ใช้สาธิตกลไก ไม่ใช่น้ำท่วมจริงของเหตุการณ์ 30 พ.ย. 2025</p>`;
+  return `
+    <p class="dlead">แปลงผลเป็น<b>ข้อมูลสำหรับตัดสินใจ</b>: ระดับสถานการณ์ พื้นที่ท่วมรายอำเภอ และความลึก ส่งต่อให้หน่วยงานเตรียมรับมือล่วงหน้า</p>
+    <div class="dalert s${s}"><span>ระดับสถานการณ์ที่ X.217</span><b>${SIT_TH[s]}</b><small>${fmt(DEMO.q,0)} ม³/วิ = ${fmt(pct,0)}% ของความจุลำน้ำ</small></div>
+    <div class="dimp">
+      <div><b>${fmt(pick.a,0)}</b><span>ตร.กม. พื้นที่ท่วมรวม</span></div>
+      <div><b>${fmt(pick.m,0)}</b><span>อ.เมืองสุราษฎร์ธานี</span></div>
+      <div><b>${fmt(pick.p,0)}</b><span>อ.พุนพิน</span></div></div>
+    <div><div class="ramp">${DEPTH.map((_,i)=>`<i style="background:var(--d${i+1})"></i>`).join('')}</div>
+      <div class="ramp-lab">${DEPTH.map(d=>`<span>${d}</span>`).join('')}</div><p class="ax-t">ความลึกน้ำท่วม (ม.)</p></div>
+    <p class="dsrc">ลองย้อนไปขั้น 3 แล้วเลื่อนค่าอัตราการไหล ผลกระทบในขั้นนี้จะเปลี่ยนตาม · เกณฑ์ระดับสถานการณ์เทียบความจุลำน้ำตามแบบ ThaiWater</p>
+    <button class="dexit" id="dexit">จบการสาธิต · กลับสู่ลุ่มน้ำตาปี</button>`;
+}
+function renderDemo(){
+  const i=DEMO.step;
+  panel.innerHTML=`
+    <div class="sec"><p class="big">สาธิต: จากฝนพยากรณ์สู่แผนที่น้ำท่วม</p>
+      <p class="lede">ระบบของโครงการทำงานอย่างไร ใน 4 ขั้น · ข้อมูลตัวอย่างจากงานที่ผ่านมาในลุ่มน้ำตาปี</p></div>
+    <ol class="dpipe">${DSTEPS.map((s,k)=>`<li><button data-ds="${k}" class="${k===i?'on':k<i?'done':''}" aria-current="${k===i?'step':'false'}"><i>${k+1}</i><span>${s.t}</span></button></li>`).join('')}</ol>
+    <div class="dbody">${demoBody()}</div>
+    <div class="dnav"><button id="dprev" ${i===0?'disabled':''}>‹ ก่อนหน้า</button><span>ขั้น ${i+1}/${DSTEPS.length}</span><button id="dnext" class="pri" ${i===DSTEPS.length-1?'disabled':''}>ถัดไป ›</button></div>`;
+  panel.querySelectorAll('[data-ds]').forEach(b=>b.onclick=()=>demoGo(+b.dataset.ds));
+  document.getElementById('dprev').onclick=()=>demoGo(i-1);
+  document.getElementById('dnext').onclick=()=>demoGo(i+1);
+  if(DSTEPS[i].k==='rain')fillTapiRain();
+  const dq=document.getElementById('dq');
+  if(dq){const set=v=>{DEMO.q=v;const pick=demoPick();demoMapFloodOnly(pick);const y=panel.scrollTop;renderDemo();panel.scrollTop=y;const n=document.getElementById('dq');n&&n.focus();};
+    dq.oninput=ev=>{DEMO.q=+ev.target.value;document.getElementById('dqv').textContent=fmt(DEMO.q,0);demoMapFloodOnly(demoPick());
+      const box=panel.querySelector('.chart');if(box)box.outerHTML=libSVG(demoPick());const p=panel.querySelector('.dpick');const pk=demoPick();
+      if(p)p.innerHTML=`<b>แผนที่ #${pk.no}</b> จากคลัง ${DEMO_LIB.length} แผนที่ · อัตราการไหลสูงสุด ${fmt(pk.q,0)} ม³/วิ<span>พื้นที่น้ำท่วม <b>${fmt(pk.a,0)} ตร.กม.</b></span>`;
+      panel.querySelectorAll('[data-dq]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.dq===DEMO.q)));};
+    panel.querySelectorAll('[data-dq]').forEach(b=>b.onclick=()=>set(+b.dataset.dq));}
+  const ex=document.getElementById('dexit'); if(ex)ex.onclick=()=>openTapi();
+}
+function demoMapFloodOnly(pick){
+  const [,sk,per]=pick.id.split('_');const ss=Object.keys(SSPK).find(k=>SSPK[k]===sk);
+  if(state.ssp===ss&&state.per===per&&current)return;
+  state.river='tapi';state.ssp=ss;state.per=per;showFlood();
+}
+function demoGo(k){
+  if(k<0||k>=DSTEPS.length)return;
+  DEMO.step=k; renderDemo(); panel.scrollTop=0; demoMap();
+}
+function openDemo(k){
+  clearPilotLayers(); state.view='demo';
+  basinsLayer.eachLayer(l=>{const e=l.getElement(); if(!e)return; e.classList.contains('tapi')?e.classList.add('open'):e.classList.add('dim');});
+  map.removeLayer(tapiLabel);
+  crumb.innerHTML='<button id="back">ประเทศไทย</button><span>›</span><button id="backT">ลุ่มน้ำตาปี</button><span>›</span><span>สาธิต</span>';
+  document.getElementById('back').onclick=()=>{endDemo();openCountry();};
+  document.getElementById('backT').onclick=()=>openTapi();
+  if(window.innerWidth>820)setPanel(true);
+  DEMO._fit=null; demoGo(k||0);
+}
+function endDemo(){stopRain();map.removeLayer(x217);if(!map.hasLayer(rainLayer))rainLayer.addTo(map);setTimeout(()=>{syncWtl();syncRail();},0);}
+document.addEventListener('keydown',ev=>{
+  if(state.view!=='demo'||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
+  if(ev.key==='ArrowRight')demoGo(DEMO.step+1);
+  if(ev.key==='ArrowLeft')demoGo(DEMO.step-1);
+});
+
+window.__demoReady=true;
 
 document.addEventListener('keydown',ev=>{
   if(/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
