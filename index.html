@@ -954,6 +954,23 @@ header .sub{font-size:12.5px;color:var(--ink-3);font-weight:400;margin-left:6px}
 .figs img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:left top;border:1px solid var(--line);border-radius:4px;background:#fff}
 .figs a:hover img{border-color:var(--tapi)}
 .figs a:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+
+/* ---------- tapi stations ---------- */
+.tst{display:flex;align-items:center;gap:5px;transform:translate(-7px,-50%);white-space:nowrap;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:2px 7px 2px 4px;font-size:11.5px;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer;width:max-content}
+.tst i{width:10px;height:10px;border-radius:2px;background:var(--tapi);display:inline-block}
+.tst b{font-family:var(--f-mono);font-weight:600}
+.tst span{font-family:var(--f-mono);color:var(--ink-2)}
+.tst.on{border-color:var(--tapi);box-shadow:0 0 0 2px var(--tapi)}
+.stcards{display:flex;flex-direction:column;gap:8px}
+.stcard{display:flex;flex-direction:column;gap:8px;text-align:left;font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer}
+.stcard:hover{border-color:var(--tapi)} .stcard.on{border-color:var(--tapi);box-shadow:inset 3px 0 0 var(--tapi)}
+.stcard:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
+.stcard .h b{font-family:var(--f-mono);font-size:14px}
+.stcard .h small{display:block;color:var(--ink-3);font-size:11.5px}
+.kv2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kv2>span{display:flex;flex-direction:column}
+.kv2 b{font-family:var(--f-mono);font-size:20px;font-weight:500;font-variant-numeric:tabular-nums}
+.kv2 small{font-size:11px;color:var(--ink-3);line-height:1.35}
 </style>
 
 </head>
@@ -1080,7 +1097,7 @@ const panel=document.getElementById('panel'), crumb=document.getElementById('cru
 function clearPilotLayers(){
   if(current){map.removeLayer(current);current=null;}
   map.removeLayer(stLayer); map.removeLayer(frame); map.removeLayer(amphLayer); tambonLayer&&map.removeLayer(tambonLayer);
-  map.removeLayer(nanGroup); timebar.hidden=true; stopPlay();
+  map.removeLayer(nanGroup); map.removeLayer(tapiStLayer); timebar.hidden=true; stopPlay();
   basinsLayer.eachLayer(l=>{const e=l.getElement(); e&&e.classList.remove('dim','open');});
 }
 function openCountry(){
@@ -1106,104 +1123,65 @@ function openCountry(){
   fillLive();
 }
 
-/* ---------- tapi view ---------- */
-function openTapi(){
-  clearPilotLayers(); state.view='tapi';
-  basinsLayer.eachLayer(l=>{const e=l.getElement(); if(!e)return; e.classList.contains('tapi')?e.classList.add('open'):e.classList.add('dim');});
-  map.removeLayer(tapiLabel); map.removeLayer(nanLabel); frame.addTo(map); amphLayer.addTo(map); tambonLayer&&tambonLayer.addTo(map);
-  showFlood();
-  map.flyToBounds(FB,{padding:[10,10],duration:1});
-  crumb.innerHTML='<button id="back">ประเทศไทย</button><span>›</span><button id="basin19">ลุ่มน้ำ'+PILOT.name+'</button><span>›</span><button id="whole">ตาปี</button><span>›</span><span>สุราษฎร์ธานี–พุนพิน</span>';
-  document.getElementById('back').onclick=openCountry;
-  document.getElementById('whole').onclick=()=>map.flyToBounds(pilotLayer.getBounds(),{duration:.8});
-  document.getElementById('basin19').onclick=()=>map.flyToBounds(basinLayers[PILOT.id].getBounds(),{duration:.8});
-  renderPanel();
+/* ---------- tapi view: flood area + flow at stations ---------- */
+const tapiStLayer=L.layerGroup();
+const TST=[{id:'X.217',lat:8.8474,lon:99.1989},{id:'X.36',lat:9.0435,lon:98.9426}];
+const thDateCE=s=>{const d=new Date(s);return isNaN(d)?s:d.toLocaleDateString('th-TH-u-ca-gregory',{day:'numeric',month:'short',year:'numeric'});};
+function peakAt(id){const p=MF[id].peaks[state.ssp].find(x=>x[0]===state.per);return{date:p[1],q:p[2]};}
+function liveFor(id){return LIVE?LIVE.rows.find(x=>x.station.tele_station_oldcode===id):null;}
+function drawTapiStations(){
+  tapiStLayer.clearLayers();
+  TST.forEach(s=>{const r=liveFor(s.id),ll=r?[+r.station.tele_station_lat,+r.station.tele_station_long]:[s.lat,s.lon],pk=peakAt(s.id);
+    const m=L.marker(ll,{icon:L.divIcon({className:'',html:`<div class="tst${state.mst===s.id?' on':''}"><i></i><b>${s.id}</b><span>${fmt(pk.q,0)} ม³/วิ</span></div>`,iconSize:[0,0],iconAnchor:[0,0]}),title:s.id,keyboard:true,zIndexOffset:1000});
+    m.on('click',()=>selectTapiSt(s.id,true));tapiStLayer.addLayer(m);});
 }
-
-function depthBar(v,total){const s=total||1;return `<div class="bar">${v.map((x,i)=>`<i style="width:${x/s*100}%;background:var(--d${i+1})" title="${DEPTH[i]} ม.: ${fmt(x,2)} km²"></i>`).join('')}</div>`;}
-
+function selectTapiSt(id,popup){state.mst=id;drawTapiStations();renderPanel(true);const r=liveFor(id);if(popup&&r)openLivePopup(r);}
+function openTapi(){
+  clearPilotLayers(); state.view='tapi'; state.mst=state.mst||'X.217';
+  basinsLayer.eachLayer(l=>{const e=l.getElement(); if(!e)return; e.classList.contains('tapi')?e.classList.add('open'):e.classList.add('dim');});
+  map.removeLayer(tapiLabel); map.removeLayer(nanLabel);
+  showFlood(); tapiStLayer.addTo(map); drawTapiStations();
+  map.flyToBounds(FB,{padding:[10,10],duration:1});
+  crumb.innerHTML='<button id="back">ประเทศไทย</button><span>›</span><span>ลุ่มน้ำตาปี · ฉากทัศน์น้ำท่วม</span>';
+  document.getElementById('back').onclick=openCountry;
+  renderPanel();
+  loadLive().then(()=>{if(state.view==='tapi'){drawTapiStations();renderPanel(true);}}).catch(()=>{});
+}
 function renderPanel(keep){
   const y=panel.scrollTop; if(keep) requestAnimationFrame(()=>{panel.scrollTop=y;});
-  const id=evId(state.river,state.ssp,state.per), e=EV[id];
-  const rows=D.sub.filter(r=>r[0]===id).filter(r=>state.dist==='all'||r[1]===state.dist).sort((a,b)=>b[12]-a[12]);
-  const tot=[5,6,7,8,9,10,11].map(i=>rows.reduce((s,r)=>s+r[i],0)), totF=rows.reduce((s,r)=>s+r[12],0), totA=rows.reduce((s,r)=>s+r[4],0);
-  const tile=(s,p)=>{const k=evId(state.river,s,p), x=EV[k], on=s===state.ssp&&p===state.per;
-    return `<button class="tile" data-s="${s}" data-p="${p}" aria-pressed="${on}" aria-label="${s} ${p}: ${fmt(x.flooded_km2_total)} ตร.กม."><img src="thumb/${k}.png" alt=""><span>${Math.round(x.flooded_km2_total)}</span></button>`;};
+  const e=EV[evId(state.river,state.ssp,state.per)];
   panel.innerHTML=`
-    <div class="sec"><p class="big">ชุดข้อมูลตัวอย่าง · ลุ่มน้ำตาปี</p><p class="lede" style="margin-bottom:6px"><b>ฉากทัศน์น้ำท่วมภายใต้ภูมิอากาศอนาคต</b> ใช้ทดสอบรูปแบบการแสดงแผนที่น้ำท่วม ซึ่งจะนำไปใช้กับผลพยากรณ์ของลุ่มน้ำน่าน</p>
-      <p class="lede">ความลึกน้ำท่วม ณ วันที่น้ำสูงสุดของแต่ละเหตุการณ์ จากแบบจำลอง HEC-RAS 1D/2D ที่ใช้ฝนจาก CMIP6 (ปรับแก้ด้วย EQM) และระดับน้ำทะเลที่สูงขึ้น</p></div>
-
+    <div class="sec"><p class="big">ลุ่มน้ำตาปี · ฉากทัศน์น้ำท่วม</p>
+      <p class="lede">พื้นที่น้ำท่วม ณ วันที่น้ำสูงสุดภายใต้ภูมิอากาศอนาคต และอัตราการไหลที่สถานีหลัก</p></div>
     <div class="sec ctlrow">
-      <label class="l">เหตุการณ์ที่เกิดจากน้ำสูงสุดของ</label>
-      <div class="seg" role="group" aria-label="แม่น้ำ">${Object.entries(RIV).map(([k,v])=>`<button data-r="${k}" aria-pressed="${state.river===k}">${v.full}<small>${v.st}</small></button>`).join('')}</div>
       <label class="l">ฉากทัศน์ภูมิอากาศ</label>
       <div class="seg" role="group" aria-label="ฉากทัศน์">${SSP.map(s=>`<button data-ssp="${s}" aria-pressed="${state.ssp===s}">${s}</button>`).join('')}</div>
       <label class="l">ช่วงเวลา</label>
       <div class="seg" role="group" aria-label="ช่วงเวลา">${PER.map(p=>`<button data-per="${p}" aria-pressed="${state.per===p}">${p}<small>${PER_TH[p]}</small></button>`).join('')}</div>
+      <label class="l">แผนที่น้ำท่วมจากน้ำหลากของ</label>
+      <div class="seg" role="group" aria-label="แม่น้ำ">${Object.entries(RIV).map(([k,v])=>`<button data-r="${k}" aria-pressed="${state.river===k}">${v.full}</button>`).join('')}</div>
     </div>
-
     <div class="card">
-      <div class="t">${RIV[state.river].full} · ${state.ssp} · ${state.per}<small>วันที่น้ำสูงสุด ${e.peak_date}</small></div>
-      <div class="kv">
-        <div><b>${fmt(e.peak_discharge_m3s,0)}</b><span>Q สูงสุดที่ ${e.driver_station} (ม³/วิ)</span></div>
-        <div><b>${fmt(e.max_sea_level_masl,2)}</b><span>ระดับน้ำทะเลสูงสุด (ม.รทก.)</span></div>
-        <div><b>${fmt(e.flooded_km2_total,1)}</b><span>พื้นที่ท่วม 2 อำเภอ (ตร.กม.)</span></div>
-      </div>
-      <div class="kv">
-        <div><b>${fmt(e.flooded_km2_mueang,1)}</b><span>อ.เมืองสุราษฎร์ธานี</span></div>
-        <div><b>${fmt(e.flooded_km2_phunphin,1)}</b><span>อ.พุนพิน</span></div>
-        <div></div>
-      </div>
+      <div class="t">พื้นที่น้ำท่วม ${fmt(e.flooded_km2_total,0)} ตร.กม.<small>อ.เมืองสุราษฎร์ธานี และ อ.พุนพิน · วันที่น้ำสูงสุด ${thDateCE(e.peak_date)}</small></div>
+      <div><div class="ramp">${DEPTH.map((_,i)=>`<i style="background:var(--d${i+1})"></i>`).join('')}</div>
+      <div class="ramp-lab">${DEPTH.map(d=>`<span>${d}</span>`).join('')}</div></div>
+      <div class="ctrl" style="margin-top:0"><label for="op">ความลึก (ม.) · ความทึบ</label><input id="op" type="range" min="0" max="1" step=".05" value="${state.opacity}"></div>
     </div>
-
-    <div class="sec"><h2>เทียบ 9 เหตุการณ์ของ${RIV[state.river].full} (ตัวเลข = ตร.กม.)</h2>
-      <div class="grid"><div></div>${PER.map(p=>`<div class="h">${p}</div>`).join('')}
-        ${SSP.map(s=>`<div class="rh">${s.replace('SSP','SSP<br>')}</div>${PER.map(p=>tile(s,p)).join('')}`).join('')}
-      </div></div>
-
-    <div class="sec"><h2>การแสดงผลบนแผนที่</h2>
-      <div class="seg" role="group" aria-label="การแสดงผล" style="margin-bottom:10px">
-        <button data-mode="depth" aria-pressed="${state.mode==='depth'}">ความลึกน้ำ</button>
-        <button data-mode="pct" aria-pressed="${state.mode==='pct'}">% พื้นที่ท่วมรายตำบล</button></div>
-      ${state.mode==='depth'?`
-      <div class="ramp">${DEPTH.map((_,i)=>`<i style="background:var(--d${i+1})"></i>`).join('')}</div>
-      <div class="ramp-lab">${DEPTH.map(d=>`<span>${d}</span>`).join('')}</div>
-      <p class="lede" style="font-size:12px;margin-top:4px">หน่วยเป็นเมตร · เส้นบางคือขอบเขตตำบล ชี้เพื่อดูตัวเลข</p>`:`
-      <div class="ramp" style="grid-template-columns:repeat(5,1fr)">${[1,2,3,4,5].map(i=>`<i style="background:var(--c${i})"></i>`).join('')}</div>
-      <div class="ramp-lab" style="grid-template-columns:repeat(5,1fr)"><span>0.5–5%</span><span>5–15%</span><span>15–30%</span><span>30–50%</span><span>≥50%</span></div>
-      <p class="lede" style="font-size:12px;margin-top:4px">สัดส่วนพื้นที่ตำบลที่ถูกน้ำท่วม</p>`}
-      <div class="ctrl"><label for="op">ความทึบ</label><input id="op" type="range" min="0" max="1" step=".05" value="${state.opacity}"></div>
-    </div>
-
-    <div class="sec"><h2>รายตำบล · พื้นที่ท่วมตามความลึก</h2>
-      <div class="filt">${[['all','ทั้ง 2 อำเภอ'],['M','อ.เมืองฯ'],['P','อ.พุนพิน']].map(([k,t])=>`<button class="chipbtn" data-d="${k}" aria-pressed="${state.dist===k}">${t}</button>`).join('')}</div>
-      <div style="overflow-x:auto"><table class="sdt">
-        <thead><tr><th>ตำบล</th><th class="num">ท่วม ตร.กม.</th><th class="num">%</th><th style="width:34%">สัดส่วนความลึก</th></tr></thead>
-        <tbody>
-          <tr class="tot"><td>รวม ${rows.length} ตำบล</td><td class="num">${fmt(totF,1)}</td><td class="num">${fmt(totF/totA*100,0)}</td><td>${depthBar(tot,totF)}</td></tr>
-          ${rows.map(r=>`<tr data-n="${r[2]}" class="trow${state.selT===r[2]?' on':''}" tabindex="0"><td class="nm">${r[3]}<span class="d">${r[1]==='M'?'เมือง':'พุนพิน'}</span><small>${r[2]}</small></td>
-            <td class="num">${fmt(r[12],2)}</td><td class="num">${fmt(r[12]/r[4]*100,0)}</td><td>${depthBar(r.slice(5,12),r[12])}</td></tr>`).join('')}
-        </tbody></table></div>
-      <p class="note" style="border:0;padding-top:6px">% คือสัดส่วนของพื้นที่ตำบล</p>
-    </div>
-
-    ${mflowSection()}
-`;
-
+    <div class="sec"><h2>อัตราการไหลที่สถานี</h2>
+      <div class="stcards">${TST.map(s=>{const pk=peakAt(s.id),r=liveFor(s.id),q=r?nnum(r.discharge):null;
+        return `<button class="stcard${state.mst===s.id?' on':''}" data-tst="${s.id}">
+          <span class="h"><b>${s.id}</b> ${MF[s.id].river}<small>${MF[s.id].place}</small></span>
+          <span class="kv2"><span><b>${fmt(pk.q,0)}</b><small>สูงสุดจากแบบจำลอง (ม³/วิ)<br>${thDateCE(pk.date)}</small></span>
+          <span><b>${q!==null?fmt(q,q<100?1:0):'–'}</b><small>ตอนนี้ (ม³/วิ)<br>${r?fmtTime(twTime(r.waterlevel_datetime)):(LIVE?'ไม่มีข้อมูลสด':'กำลังโหลด…')}</small></span></span></button>`;}).join('')}</div>
+      <p class="note" style="border:0;padding-top:6px">คลิกสถานีเพื่อดูกราฟระดับน้ำและอัตราการไหล 7 วันล่าสุด</p>
+    </div>`;
   panel.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{state.river=b.dataset.r;update();});
   panel.querySelectorAll('[data-ssp]').forEach(b=>b.onclick=()=>{state.ssp=b.dataset.ssp;update();});
   panel.querySelectorAll('[data-per]').forEach(b=>b.onclick=()=>{state.per=b.dataset.per;update();});
-  panel.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{state.ssp=b.dataset.s;state.per=b.dataset.p;update();});
-  panel.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{state.dist=b.dataset.d;renderPanel();});
-  panel.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{state.mode=b.dataset.mode;update();});
-  panel.querySelectorAll('tr[data-n]').forEach(tr=>{const go=()=>{const n=tr.dataset.n; state.selT=state.selT===n?null:n; restyleT(); renderPanel(true);
-      const l=tambonByName[n]; if(l&&state.selT) map.flyToBounds(l.getBounds(),{maxZoom:13,duration:.6,padding:[40,40]});};
-    tr.onclick=go; tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};});
+  panel.querySelectorAll('[data-tst]').forEach(b=>b.onclick=()=>{const id=b.dataset.tst;const m=tapiStLayer.getLayers().find(l=>l.options.title===id);if(m)map.panTo(m.getLatLng());selectTapiSt(id,true);});
   document.getElementById('op').oninput=ev=>{state.opacity=+ev.target.value; current&&current.setOpacity(state.opacity);};
-  panel.querySelectorAll('[data-mst]').forEach(b=>b.onclick=()=>{state.mst=b.dataset.mst;renderPanel(true);});
-  fillMflowLive();
 }
-function update(){ showFlood(); renderPanel(true); }
+function update(){ showFlood(); drawTapiStations(); renderPanel(true); }
 
 /* ---------- Nan basin: short-term forecast view (proposal §6.5) ---------- */
 let NF=null, NAMPH=null, nanAmphLayer=null, rainOverlay=null;
@@ -1394,7 +1372,7 @@ async function openNan(){
 const TW='https://api-v3.thaiwater.net/api/v1/thaiwater30/public/';
 const SIT_TH={1:'น้ำน้อยวิกฤต',2:'น้ำน้อย',3:'ปกติ',4:'น้ำมาก',5:'ล้นตลิ่ง'};
 const SIT_ORDER=[5,4,1,2,3];
-const liveLayer=L.layerGroup(), liveRenderer=L.canvas({padding:.5});
+const liveLayer=L.layerGroup(), liveRenderer=L.svg({padding:.5});
 let LIVE=null, liveLoading=null, liveErr=false;
 const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const nnum=v=>v===null||v===undefined||v===''||isNaN(+v)?null:+v;
@@ -1525,7 +1503,7 @@ liveRenderer.options.pane='live';
 layersCtl.addOverlay(liveLayer,'ระดับน้ำปัจจุบัน (ThaiWater)');
 liveLayer.addTo(map);
 
-/* ---------- modelled peak flow at the scenario driver stations (Tapi example) ---------- */
+/* modelled peak flow per station, scenario and period */
 const MF={
   'X.217':{river:'แม่น้ำตาปี',place:'บ้านเคียนซา อ.เคียนซา',area:'6,740',
     peaks:{'SSP2-4.5':[['2040s','10 Dec 2035',1020.15],['2060s','20 Nov 2065',839.63],['2080s','07 Jan 2084',958.81]],
@@ -1536,36 +1514,6 @@ const MF={
            'SSP3-7.0':[['2040s','29 Aug 2035',784.76],['2060s','08 Sep 2057',974.07],['2080s','29 Sep 2073',988.50]],
            'SSP5-8.5':[['2040s','04 Aug 2039',773.79],['2060s','24 Aug 2067',871.38],['2080s','19 Aug 2084',904.41]]}}
 };
-function peakChart(st){
-  const m=MF[st],W=360,H=170,pl=40,pr=8,pt=10,pb=34,ssp=Object.keys(m.peaks),gw=(W-pl-pr)/3,bw=(gw-14)/3;
-  const ymax=Math.ceil(Math.max(...Object.values(m.peaks).flat().map(p=>p[2]))*1.1/200)*200;
-  const y=v=>pt+(H-pt-pb)*(1-v/ymax);
-  let s=`<svg viewBox="0 0 ${W} ${H}" class="chart mf" role="img" aria-label="อัตราการไหลสูงสุดจากแบบจำลอง ${st}">`;
-  [0,ymax/2,ymax].forEach(v=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pl-4}" y="${y(v)+3}" text-anchor="end">${v.toLocaleString('en-US')}</text>`;});
-  ssp.forEach((k,gi)=>{m.peaks[k].forEach(([per,date,q],i)=>{const x=pl+gi*gw+7+i*bw;
-    s+=`<rect class="mfb p${i}${state.ssp===k&&state.per===per&&state.river===(st==='X.217'?'tapi':'phumduang')?' on':''}" x="${x+1}" y="${y(q)}" width="${bw-2}" height="${H-pb-y(q)}"><title>${k} ${per}: ${q.toLocaleString('en-US')} ม³/วิ (${date})</title></rect>`;});
-    s+=`<text class="ax" x="${pl+gi*gw+gw/2}" y="${H-18}" text-anchor="middle">${k}</text>`;});
-  s+=`<text class="ax" x="${pl}" y="${H-4}">แท่งซ้าย→ขวา: 2040s · 2060s · 2080s</text>`;
-  return s+'</svg>';
-}
-function mflowSection(){
-  state.mst=state.mst||'X.217';const st=state.mst,m=MF[st];
-  return `<div class="sec" id="mflow"><h2>อัตราการไหลสูงสุดจากแบบจำลอง</h2>
-    <div class="seg" role="group" aria-label="สถานี" style="margin-bottom:8px">${Object.keys(MF).map(k=>`<button data-mst="${k}" aria-pressed="${st===k}">${k}<small>${MF[k].river}</small></button>`).join('')}</div>
-    <p class="lede" style="font-size:12.5px">${m.place} · พื้นที่รับน้ำ ${m.area} ตร.กม.${m.note?' · '+m.note:''}</p>
-    ${peakChart(st)}
-    <div id="mflowLive" class="mflive"></div>
-  </div>`;
-}
-function fillMflowLive(){
-  const el=document.getElementById('mflowLive');if(!el)return;
-  if(!LIVE){el.innerHTML='';loadLive().then(fillMflowLive).catch(()=>{});return;}
-  const r=LIVE.rows.find(x=>x.station.tele_station_oldcode===state.mst);
-  if(!r){el.innerHTML=`<p class="lc-note">ไม่พบสถานี ${state.mst} ในข้อมูล ThaiWater ขณะนี้</p>`;return;}
-  const q=nnum(r.discharge),wl=nnum(r.waterlevel_msl),s=sitOf(r);
-  el.innerHTML=`<button class="lvrow" data-live="${r.station.id}"><span class="spill s${s}">${SIT_TH[s]||'–'}</span><span class="nm">ตอนนี้ที่ ${esc(r.station.tele_station_name.th)} (${state.mst})<small>ThaiWater · ${fmtTime(twTime(r.waterlevel_datetime))}${isOld(r)?' · ข้อมูลเก่า':''} · คลิกดูกราฟ 7 วัน</small></span><span class="num">${q!==null?fmt(q,q<100?1:0)+' ม³/วิ':(wl!==null?wl.toFixed(2)+' ม.รทก.':'–')}</span></button>`;
-  el.querySelector('[data-live]').onclick=()=>{if(!map.hasLayer(liveLayer))liveLayer.addTo(map);map.flyTo(r._m.getLatLng(),Math.max(map.getZoom(),11),{duration:.6});map.once('moveend',()=>openLivePopup(r));};
-}
 
 document.addEventListener('keydown',ev=>{
   if(/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
