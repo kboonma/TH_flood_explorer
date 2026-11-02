@@ -13,7 +13,8 @@ Interactive map of flood hazard, rainfall and climate scenarios across Thailand'
 - Administrative boundaries: Royal Thai Survey Department via [OCHA COD-AB](https://data.humdata.org/dataset/cod-ab-tha) (CC BY-IGO)
 - Neighbouring countries: [Natural Earth](https://www.naturalearthdata.com/)
 - Basemap: © OpenStreetMap contributors © CARTO
-- Basin outlines other than Tapi are placeholders.
+- River basins: the 22 main basins under the Royal Decree on River Basins B.E. 2564 (2021), Office of the National Water Resources (ONWR/สทนช.). Layer obtained via [pratikkhanal16/thailand-water-storage-dss](https://github.com/pratikkhanal16/thailand-water-storage-dss) (`MainBasin_ONWR_Law_WGS84`); simplified for the web (`geo/tha_basins22_onwr_web.geojson`, ~300 m) with a detailed copy (`geo/tha_basins22_onwr_detail.geojson`, ~50 m).
+- Tapi study-area outline: digitised from the project report (pilot area inside basin 19, Peninsula – Upper East Coast).
 
 Preliminary figures for demonstration; not for operational use.
 
