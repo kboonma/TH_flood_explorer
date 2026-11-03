@@ -20,6 +20,7 @@ Situation classes follow ThaiWater: น้ำน้อยวิกฤต · น�
 ## Data
 - `data/rain_hourly/` — hourly **forecast** rainfall (mm/hr, 0.1°, 72 h from 11 Dec 2025) converted from a `.mat` file with `tools/rain_mat_to_dashboard.py`: one PNG per hour (`frames/`) plus `rain.json` (bounds, times, legend, hourly mean per ONWR basin). Re-run with `--rain <variable>` for other files.
 - `geo/tapi_rivers.geojson` — Tapi river network from OpenStreetMap (© OpenStreetMap contributors, ODbL). Line direction = flow direction; the 3rd coordinate is the approximate distance to the river mouth (km), used to order stations. Distances are approximate and only show order.
+- `data/model_results.json` — daily modelled hydrographs of the 18 scenario events at X.217 and X.36 (digitised from the report figures, peaks matched to the report table; `tools/digitise_hydrographs.py`).
 - `flood/`, `thumb/` — Tapi flood-depth layers, 18 climate scenarios.
 - `geo/tha_basins22_onwr_*.geojson` — 22 main river basins (Royal Decree on River Basins B.E. 2564, ONWR; via [pratikkhanal16/thailand-water-storage-dss](https://github.com/pratikkhanal16/thailand-water-storage-dss)).
 - `geo/tha_provinces_*`, `geo/tha_country_*`, `geo/surat_*` — Royal Thai Survey Department via [OCHA COD-AB](https://data.humdata.org/dataset/cod-ab-tha) (CC BY-IGO).
