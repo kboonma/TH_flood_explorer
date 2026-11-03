@@ -18,7 +18,7 @@ Station water levels and discharge come live from the **ThaiWater public API** (
 Situation classes follow ThaiWater: น้ำน้อยวิกฤต · น้ำน้อย · ปกติ · น้ำมาก · ล้นตลิ่ง. Shown for decision support; not an official warning.
 
 ## Data
-- `data/rain_hourly/` — hourly **forecast** rainfall (mm/hr, 0.1°, 72 h from 11 Dec 2025) converted from a `.mat` file with `tools/rain_mat_to_dashboard.py`: one PNG per hour (`frames/`) plus `rain.json` (bounds, times, legend, hourly mean per ONWR basin). Re-run with `--rain <variable>` for other files.
+- `data/rain_hourly/` — hourly **forecast** rainfall (mm/hr, WRF grid ≈ 3 km, 72 h from 11 Dec 2025 00:00 UTC; shown in Thai time, 08:00 11 Dec – 07:00 14 Dec, each frame = rain in the hour ending at that time) from `wrfda_gsmap_20251211_20251213.mat`, variable `dat1` (`dat2` in the same file is not shown). Built with `tools/build_dashboard_rain.py file.mat -o data/rain_hourly --tz-offset 7`: one PNG per hour (`frames/`) and `rain.json` (bounds, times, legend, hourly mean per ONWR basin).
 - `geo/tapi_rivers.geojson` — Tapi river network from OpenStreetMap (© OpenStreetMap contributors, ODbL). Line direction = flow direction; the 3rd coordinate is the approximate distance to the river mouth (km), used to order stations. Distances are approximate and only show order.
 - `data/model_results.json` — daily modelled hydrographs of the 18 scenario events at X.217 and X.36 (digitised from the report figures, peaks matched to the report table; `tools/digitise_hydrographs.py`).
 - `flood/`, `thumb/` — Tapi flood-depth layers, 18 climate scenarios.
@@ -27,7 +27,8 @@ Situation classes follow ThaiWater: น้ำน้อยวิกฤต · น�
 - Basemaps: © Esri, © OpenStreetMap contributors. Neighbouring countries: Natural Earth.
 
 ## Tools
-- `tools/rain_mat_to_dashboard.py` — converts MATLAB `.mat` rainfall (v5/v7.3, gridded or station) into map frames + basin-mean series.
+- `tools/rain_mat_to_dashboard.py` — inspects/converts MATLAB `.mat` rainfall (v5/v7.3, gridded or station; regular or irregular latitude spacing; names like `dat1`/`lat1`/`date1` auto-detected).
+- `tools/build_dashboard_rain.py` — builds `data/rain_hourly/` for the dashboard (frames + `rain.json` with 22-basin hourly means).
 
 ## Structure
 ```

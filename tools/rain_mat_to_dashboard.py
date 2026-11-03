@@ -74,10 +74,10 @@ def load_mat(path):
 
 # ---------------------------------------------------------------- guessing
 PAT = {
-    'lat':  r'(^|[._])(lat|latitude|lats|y|ycoord|ylat|lat_?grid)$',
-    'lon':  r'(^|[._])(lon|long|longitude|lons|x|xcoord|xlon|lon_?grid)$',
-    'time': r'(^|[._])(time|times|date|dates|datenum|dn|t|day|days|datetime|tt|yyyymmdd)$',
-    'rain': r'(^|[._])(rain|rainfall|precip|precipitation|pr|prcp|pre|p|rf|rr|tp|ppt|chirps|imerg|gsmap|aphro\w*|data|value|values)$',
+    'lat':  r'(^|[._])(lat|latitude|lats|y|ycoord|ylat|lat_?grid)\d*$',          # trailing digits allowed (lat1, date1 ...)
+    'lon':  r'(^|[._])(lon|long|longitude|lons|x|xcoord|xlon|lon_?grid)\d*$',
+    'time': r'(^|[._])(time|times|date|dates|datenum|dn|t|day|days|datetime|tt|yyyymmdd)\d*$',
+    'rain': r'(^|[._])(rain|rainfall|precip|precipitation|pr|prcp|pre|p|rf|rr|tp|ppt|chirps|imerg|gsmap|aphro\w*|data|dat|value|values)\d*$',
 }
 def pick(vars_, kind, override=None):
     if override:
@@ -87,7 +87,7 @@ def pick(vars_, kind, override=None):
     if kind == 'rain':
         c = [k for k in c if vars_[k].dtype.kind in 'fiu' and vars_[k].ndim >= 2] or \
             sorted([k for k in vars_ if vars_[k].dtype.kind in 'fiu' and vars_[k].ndim >= 2], key=lambda k: -vars_[k].size)
-    return max(c, key=lambda k: vars_[k].size) if c else None
+    return max(sorted(c), key=lambda k: vars_[k].size) if c else None   # ties -> alphabetical first (dat1 before dat2)
 
 def to_datetimes(t):
     t = np.asarray(t)
@@ -132,6 +132,12 @@ def nice(v):
 # ---------------------------------------------------------------- geometry
 CLIPS = {'tapi': (98.2, 7.7, 100.1, 9.8), 'thailand': (97.2, 5.5, 105.8, 20.6)}
 def merc_y(lat): return np.log(np.tan(np.pi / 4 + np.radians(lat) / 2))
+def nearest_index(coord, q):
+    """index of the grid value nearest to each q; coord may be ascending or descending, regular or not"""
+    c = np.asarray(coord, float); desc = c[0] > c[-1]; asc = c[::-1] if desc else c
+    j = np.clip(np.searchsorted(asc, q), 1, len(asc) - 1)
+    j = np.where(np.abs(asc[j - 1] - q) <= np.abs(asc[j] - q), j - 1, j)
+    return (len(c) - 1 - j) if desc else j
 
 def basin_mask(lon2, lat2, geojson):
     from shapely.geometry import shape
@@ -211,7 +217,8 @@ def convert(a):
             R = R[:, iy[0]:iy[-1] + 1, ix[0]:ix[-1] + 1]; lat = lat[iy[0]:iy[-1] + 1]; lon = lon[ix[0]:ix[-1] + 1]
         else: print(f"warning: grid does not cover clip '{a.clip}', keeping full extent")
     dy = abs(lat[1] - lat[0]) if len(lat) > 1 else 0.1; dx = abs(lon[1] - lon[0]) if len(lon) > 1 else 0.1
-    Nb, Sb, Wb, Eb = lat[0] + dy / 2, lat[-1] - dy / 2, lon[0] - dx / 2, lon[-1] + dx / 2
+    dyS = abs(lat[-1] - lat[-2]) if len(lat) > 1 else dy                 # spacing may vary (e.g. WRF Mercator grid)
+    Nb, Sb, Wb, Eb = lat[0] + dy / 2, lat[-1] - dyS / 2, lon[0] - dx / 2, lon[-1] + dx / 2
 
     # basin means
     LON, LAT = np.meshgrid(lon, lat)
@@ -233,7 +240,7 @@ def convert(a):
     H = R.shape[1] * up; Wd = R.shape[2] * up
     yN, yS = merc_y(Nb), merc_y(Sb)
     row_lat = np.degrees(2 * np.arctan(np.exp(yN - (np.arange(H) + .5) / H * (yN - yS))) - np.pi / 2)
-    src_r = np.clip(((Nb - row_lat) / dy).astype(int), 0, R.shape[1] - 1)
+    src_r = nearest_index(lat, row_lat)                                  # works for regular and irregular latitude spacing
     src_c = np.clip(((np.arange(Wd) + .5) / up).astype(int), 0, R.shape[2] - 1)
 
     from PIL import Image
